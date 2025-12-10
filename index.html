@@ -585,14 +585,37 @@
             color: #888;
         }
         
+        .stat-context {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 2px;
+        }
+        
         .history-list {
             max-height: 400px;
             overflow-y: auto;
         }
         
+        .history-list-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr 40px;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #444;
+            color: #666;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .history-list-header span:nth-child(2) {
+            text-align: right;
+        }
+        
         .history-item {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr 40px;
+            gap: 10px;
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid #333;
@@ -977,16 +1000,24 @@
                 <div class="summary-stats">
                     <div class="stat">
                         <div class="stat-value" id="totalDays">0</div>
-                        <div class="stat-label">Days</div>
+                        <div class="stat-label">Days Tracked</div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value" id="perfectDays">0</div>
-                        <div class="stat-label" id="perfectLabel">Perfect</div>
+                        <div class="stat-value" id="perfectDays">0%</div>
+                        <div class="stat-label">Perfect Days</div>
+                        <div class="stat-context" id="perfectContext"></div>
                     </div>
                     <div class="stat">
-                        <div class="stat-value" id="avgScore">0</div>
-                        <div class="stat-label" id="avgLabel">Avg</div>
+                        <div class="stat-value" id="avgScore">0%</div>
+                        <div class="stat-label">Avg Discipline</div>
+                        <div class="stat-context" id="avgContext"></div>
                     </div>
+                </div>
+                <div class="history-list-header">
+                    <span>Date</span>
+                    <span>P&L</span>
+                    <span>Discipline</span>
+                    <span></span>
                 </div>
                 <div class="history-list" id="historyList"></div>
             </div>
@@ -1484,9 +1515,9 @@
                 list.innerHTML = '<div class="empty-state">No entries yet.</div>';
                 document.getElementById('totalDays').textContent = '0';
                 document.getElementById('perfectDays').textContent = '0%';
-                document.getElementById('perfectLabel').textContent = 'Perfect';
+                document.getElementById('perfectContext').textContent = '';
                 document.getElementById('avgScore').textContent = '0%';
-                document.getElementById('avgLabel').textContent = 'Avg';
+                document.getElementById('avgContext').textContent = '';
                 return;
             }
             
@@ -1505,9 +1536,9 @@
             
             document.getElementById('totalDays').textContent = totalDays;
             document.getElementById('perfectDays').textContent = perfectPct + '%';
-            document.getElementById('perfectLabel').textContent = `(${perfectDays}/${totalDays})`;
+            document.getElementById('perfectContext').textContent = `(${perfectDays} of ${totalDays} days)`;
             document.getElementById('avgScore').textContent = Math.round(avgPct) + '%';
-            document.getElementById('avgLabel').textContent = `(${avgRaw.toFixed(1)}/${total})`;
+            document.getElementById('avgContext').textContent = `(${avgRaw.toFixed(1)}/${total} avg)`;
             
             list.innerHTML = entries.map(entry => {
                 const d = new Date(entry.date + 'T12:00:00');
