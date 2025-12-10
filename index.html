@@ -276,7 +276,7 @@
             font-size: 1em;
         }
         
-        .date-picker, .pnl-input {
+        .date-picker, .pnl-input, .trades-input {
             background: #1a1a2e;
             border: 1px solid #444;
             border-radius: 6px;
@@ -290,7 +290,11 @@
             width: 100px;
         }
         
-        .date-picker:focus, .pnl-input:focus {
+        .trades-input {
+            width: 70px;
+        }
+        
+        .date-picker:focus, .pnl-input:focus, .trades-input:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -598,7 +602,7 @@
         
         .history-list-header {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 30px;
+            grid-template-columns: 1fr 1fr 0.7fr 1fr 30px;
             gap: 15px;
             padding: 10px 0;
             border-bottom: 1px solid #444;
@@ -613,12 +617,16 @@
         }
         
         .history-list-header span:nth-child(3) {
+            text-align: center;
+        }
+        
+        .history-list-header span:nth-child(4) {
             text-align: right;
         }
         
         .history-item {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 30px;
+            grid-template-columns: 1fr 1fr 0.7fr 1fr 30px;
             gap: 15px;
             align-items: center;
             padding: 12px 0;
@@ -642,6 +650,12 @@
         .history-pnl.positive { color: #22c55e; }
         .history-pnl.negative { color: #ef4444; }
         .history-pnl.zero { color: #666; }
+        
+        .history-trades {
+            font-size: 0.9em;
+            text-align: center;
+            color: #888;
+        }
         
         .history-score {
             font-weight: bold;
@@ -966,6 +980,8 @@
                     <input type="date" id="entryDate" class="date-picker">
                     <label style="margin-left: 20px;">P&L:</label>
                     <input type="number" id="pnlInput" class="pnl-input" placeholder="$0" step="0.01">
+                    <label style="margin-left: 20px;">Trades:</label>
+                    <input type="number" id="tradesInput" class="trades-input" placeholder="0" min="0" step="1">
                 </div>
                 
                 <div id="questionsContainer"></div>
@@ -1017,10 +1033,16 @@
                         <div class="stat-label">Avg Discipline</div>
                         <div class="stat-context" id="avgContext"></div>
                     </div>
+                    <div class="stat">
+                        <div class="stat-value" id="avgTrades">0</div>
+                        <div class="stat-label">Avg Trades</div>
+                        <div class="stat-context" id="avgTradesContext"></div>
+                    </div>
                 </div>
                 <div class="history-list-header">
                     <span>Date</span>
                     <span>P&L</span>
+                    <span>Trades</span>
                     <span>Discipline</span>
                     <span></span>
                 </div>
@@ -1371,6 +1393,7 @@
                     score: r.score || 0,
                     totalQuestions: r.total_questions || config.questions.length,
                     pnl: r.pnl,
+                    trades: r.trades,
                     notes: r.notes || ''
                 }));
             } catch (err) {
@@ -1440,9 +1463,11 @@
                 });
                 document.getElementById('notes').value = entry.notes || '';
                 document.getElementById('pnlInput').value = entry.pnl ?? '';
+                document.getElementById('tradesInput').value = entry.trades ?? '';
             } else {
                 document.getElementById('notes').value = '';
                 document.getElementById('pnlInput').value = '';
+                document.getElementById('tradesInput').value = '';
             }
             
             renderQuestions();
@@ -1457,6 +1482,7 @@
             
             const date = document.getElementById('entryDate').value;
             const pnlVal = document.getElementById('pnlInput').value;
+            const tradesVal = document.getElementById('tradesInput').value;
             const yesCount = Object.values(answers).filter(a => a === 'yes').length;
             
             const data = {
@@ -1466,6 +1492,7 @@
                 score: yesCount,
                 total_questions: total,
                 pnl: pnlVal !== '' ? parseFloat(pnlVal) : null,
+                trades: tradesVal !== '' ? parseInt(tradesVal) : null,
                 notes: document.getElementById('notes').value.trim()
             };
             
@@ -1523,6 +1550,8 @@
                 document.getElementById('perfectContext').textContent = '';
                 document.getElementById('avgScore').textContent = '0%';
                 document.getElementById('avgContext').textContent = '';
+                document.getElementById('avgTrades').textContent = '0';
+                document.getElementById('avgTradesContext').textContent = '';
                 return;
             }
             
@@ -1539,23 +1568,32 @@
             // Average raw score for context
             const avgRaw = entries.reduce((sum, e) => sum + (e.score || 0), 0) / totalDays;
             
+            // Calculate average trades
+            const entriesWithTrades = entries.filter(e => e.trades != null);
+            const totalTrades = entriesWithTrades.reduce((sum, e) => sum + (e.trades || 0), 0);
+            const avgTrades = entriesWithTrades.length > 0 ? totalTrades / entriesWithTrades.length : 0;
+            
             document.getElementById('totalDays').textContent = totalDays;
             document.getElementById('perfectDays').textContent = perfectPct + '%';
             document.getElementById('perfectContext').textContent = `(${perfectDays} of ${totalDays} days)`;
             document.getElementById('avgScore').textContent = Math.round(avgPct) + '%';
             document.getElementById('avgContext').textContent = `(${avgRaw.toFixed(1)}/${total} avg)`;
+            document.getElementById('avgTrades').textContent = avgTrades.toFixed(1);
+            document.getElementById('avgTradesContext').textContent = `(${totalTrades} total)`;
             
             list.innerHTML = entries.map(entry => {
                 const d = new Date(entry.date + 'T12:00:00');
                 const displayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
                 const entryTotal = entry.totalQuestions || total;
                 const pnl = entry.pnl || 0;
+                const trades = entry.trades != null ? entry.trades : '-';
                 const pct = Math.round((entry.score / entryTotal) * 100);
                 
                 return `
                     <div class="history-item">
                         <span class="history-date">${displayDate}</span>
                         <span class="history-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</span>
+                        <span class="history-trades">${trades}</span>
                         <span class="history-score ${getScoreClass(entry.score, entryTotal)}">${pct}% <small style="color:#666">(${entry.score}/${entryTotal})</small></span>
                         <button class="delete-btn" data-date="${entry.date}">×</button>
                     </div>
@@ -1701,6 +1739,11 @@
                         ? (perfectDays / userEntries.length * 100)
                         : 0;
                     
+                    // Average trades
+                    const entriesWithTrades = userEntries.filter(e => e.trades != null);
+                    const totalTrades = entriesWithTrades.reduce((sum, e) => sum + (e.trades || 0), 0);
+                    const avgTrades = entriesWithTrades.length > 0 ? totalTrades / entriesWithTrades.length : null;
+                    
                     return {
                         id: user.id,
                         name: user.name || user.email,
@@ -1711,7 +1754,9 @@
                         avgRawScore: avgRawScore,
                         typicalQuestions: typicalQuestions,
                         perfectDays: perfectDays,
-                        perfectPct: perfectPct
+                        perfectPct: perfectPct,
+                        avgTrades: avgTrades,
+                        totalTrades: totalTrades
                     };
                 }).filter(u => u.days > 0);
                 
@@ -1747,16 +1792,16 @@
                                 <div class="team-stat-label">P&L</div>
                             </div>
                             <div>
+                                <div class="team-stat-value">${user.avgTrades != null ? user.avgTrades.toFixed(1) : '-'}</div>
+                                <div class="team-stat-label">Avg Trades</div>
+                            </div>
+                            <div>
                                 <div class="team-stat-value">${Math.round(user.avgPct)}%</div>
                                 <div class="team-stat-label">(${user.avgRawScore.toFixed(1)}/${user.typicalQuestions})</div>
                             </div>
                             <div>
                                 <div class="team-stat-value">${Math.round(user.perfectPct)}%</div>
                                 <div class="team-stat-label">Perfect (${user.perfectDays}/${user.days})</div>
-                            </div>
-                            <div>
-                                <div class="team-stat-value">${user.days}</div>
-                                <div class="team-stat-label">Days</div>
                             </div>
                         </div>
                     </div>
