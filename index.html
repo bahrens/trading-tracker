@@ -1286,7 +1286,7 @@
         async function loadConfig() {
             try {
                 const records = await pb.collection('config').getList(1, 1, {
-                    filter: `user = "${currentUser.id}"`
+                    filter: `user = '${currentUser.id}'`
                 });
                 
                 if (records.items.length > 0) {
@@ -1322,9 +1322,11 @@
         async function loadEntries() {
             try {
                 const records = await pb.collection('entries').getFullList({
-                    filter: `user = "${currentUser.id}"`,
+                    filter: `user = '${currentUser.id}'`,
                     sort: '-date'
                 });
+                
+                console.log('Loaded entries:', records.length, records);
                 
                 entries = records.map(r => ({
                     id: r.id,
@@ -1432,10 +1434,14 @@
             
             try {
                 const existing = entries.find(e => e.date === date);
+                console.log('Saving entry for date:', date, 'Existing:', existing);
+                
                 if (existing?.id) {
                     await pb.collection('entries').update(existing.id, data);
+                    console.log('Updated existing entry');
                 } else {
                     await pb.collection('entries').create(data);
+                    console.log('Created new entry');
                 }
                 
                 await loadEntries();
@@ -1614,7 +1620,7 @@
                 const startOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
                 
                 const allEntries = await pb.collection('entries').getFullList({
-                    filter: `date >= "${startOfMonth}"`
+                    filter: `date >= '${startOfMonth}'`
                 });
                 
                 // Group by user
