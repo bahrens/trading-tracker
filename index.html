@@ -985,7 +985,7 @@
                     </div>
                     <div class="stat">
                         <div class="stat-value" id="avgScore">0</div>
-                        <div class="stat-label">Avg Score</div>
+                        <div class="stat-label" id="avgLabel">Avg</div>
                     </div>
                 </div>
                 <div class="history-list" id="historyList"></div>
@@ -1379,8 +1379,9 @@
         function updateScore() {
             const total = config.questions.length;
             const yesCount = Object.values(answers).filter(a => a === 'yes').length;
+            const pct = total > 0 ? Math.round((yesCount / total) * 100) : 0;
             const el = document.getElementById('todayScore');
-            el.textContent = `${yesCount}/${total}`;
+            el.innerHTML = `${pct}% <small style="font-size:0.4em;color:#888">(${yesCount}/${total})</small>`;
             el.className = 'score-number ' + getScoreClass(yesCount, total);
         }
         
@@ -1479,35 +1480,47 @@
             const list = document.getElementById('historyList');
             const total = config.questions.length;
             
-            document.getElementById('perfectLabel').textContent = `Perfect (${total}/${total})`;
-            
             if (entries.length === 0) {
                 list.innerHTML = '<div class="empty-state">No entries yet.</div>';
                 document.getElementById('totalDays').textContent = '0';
-                document.getElementById('perfectDays').textContent = '0';
-                document.getElementById('avgScore').textContent = '0';
+                document.getElementById('perfectDays').textContent = '0%';
+                document.getElementById('perfectLabel').textContent = 'Perfect';
+                document.getElementById('avgScore').textContent = '0%';
+                document.getElementById('avgLabel').textContent = 'Avg';
                 return;
             }
             
             const totalDays = entries.length;
             const perfectDays = entries.filter(e => e.score === (e.totalQuestions || total)).length;
-            const avgScore = (entries.reduce((sum, e) => sum + (e.score || 0), 0) / totalDays).toFixed(1);
+            const perfectPct = Math.round(perfectDays / totalDays * 100);
+            
+            // Calculate average percentage
+            const avgPct = entries.reduce((sum, e) => {
+                const entryTotal = e.totalQuestions || total;
+                return sum + ((e.score || 0) / entryTotal * 100);
+            }, 0) / totalDays;
+            
+            // Average raw score for context
+            const avgRaw = entries.reduce((sum, e) => sum + (e.score || 0), 0) / totalDays;
             
             document.getElementById('totalDays').textContent = totalDays;
-            document.getElementById('perfectDays').textContent = perfectDays;
-            document.getElementById('avgScore').textContent = avgScore;
+            document.getElementById('perfectDays').textContent = perfectPct + '%';
+            document.getElementById('perfectLabel').textContent = `(${perfectDays}/${totalDays})`;
+            document.getElementById('avgScore').textContent = Math.round(avgPct) + '%';
+            document.getElementById('avgLabel').textContent = `(${avgRaw.toFixed(1)}/${total})`;
             
             list.innerHTML = entries.map(entry => {
                 const d = new Date(entry.date + 'T12:00:00');
                 const displayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 const entryTotal = entry.totalQuestions || total;
                 const pnl = entry.pnl || 0;
+                const pct = Math.round((entry.score / entryTotal) * 100);
                 
                 return `
                     <div class="history-item">
                         <span class="history-date">${displayDate}</span>
                         <span class="history-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</span>
-                        <span class="history-score ${getScoreClass(entry.score, entryTotal)}">${entry.score}/${entryTotal}</span>
+                        <span class="history-score ${getScoreClass(entry.score, entryTotal)}">${pct}% <small style="color:#666">(${entry.score}/${entryTotal})</small></span>
                         <button class="delete-btn" data-date="${entry.date}">×</button>
                     </div>
                 `;
