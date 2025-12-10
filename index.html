@@ -1627,12 +1627,30 @@
                 const userStats = users.map(user => {
                     const userEntries = allEntries.filter(e => e.user === user.id);
                     const totalPnl = userEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
-                    const avgScore = userEntries.length > 0 
-                        ? userEntries.reduce((sum, e) => sum + (e.score || 0), 0) / userEntries.length 
+                    
+                    // Calculate average percentage (each entry's score/total as %)
+                    const avgPct = userEntries.length > 0 
+                        ? userEntries.reduce((sum, e) => {
+                            const total = e.total_questions || 4;
+                            return sum + ((e.score || 0) / total * 100);
+                        }, 0) / userEntries.length 
                         : 0;
-                    const totalQuestions = userEntries.length > 0 
+                    
+                    // Get their typical question count for context
+                    const typicalQuestions = userEntries.length > 0 
                         ? userEntries[0].total_questions || 4 
                         : 4;
+                    
+                    // Average raw score for context display
+                    const avgRawScore = userEntries.length > 0
+                        ? userEntries.reduce((sum, e) => sum + (e.score || 0), 0) / userEntries.length
+                        : 0;
+                    
+                    // Perfect days count and percentage
+                    const perfectDays = userEntries.filter(e => e.score === (e.total_questions || 4)).length;
+                    const perfectPct = userEntries.length > 0 
+                        ? (perfectDays / userEntries.length * 100)
+                        : 0;
                     
                     return {
                         id: user.id,
@@ -1640,25 +1658,27 @@
                         isCurrentUser: user.id === currentUser.id,
                         days: userEntries.length,
                         pnl: totalPnl,
-                        avgScore: avgScore.toFixed(1),
-                        totalQuestions,
-                        perfectDays: userEntries.filter(e => e.score === (e.total_questions || 4)).length
+                        avgPct: avgPct,
+                        avgRawScore: avgRawScore,
+                        typicalQuestions: typicalQuestions,
+                        perfectDays: perfectDays,
+                        perfectPct: perfectPct
                     };
                 }).filter(u => u.days > 0);
                 
                 // Sort by P&L
                 userStats.sort((a, b) => b.pnl - a.pnl);
                 
-                // Team totals
+                // Team totals - average of everyone's percentages
                 const teamPnl = userStats.reduce((sum, u) => sum + u.pnl, 0);
-                const teamAvg = userStats.length > 0 
-                    ? (userStats.reduce((sum, u) => sum + parseFloat(u.avgScore), 0) / userStats.length).toFixed(1)
-                    : '0';
+                const teamAvgPct = userStats.length > 0 
+                    ? (userStats.reduce((sum, u) => sum + u.avgPct, 0) / userStats.length)
+                    : 0;
                 
                 document.getElementById('teamMembers').textContent = userStats.length;
                 document.getElementById('teamTotalPnl').textContent = formatPnl(teamPnl);
                 document.getElementById('teamTotalPnl').className = 'team-summary-value';
-                document.getElementById('teamAvgScore').textContent = teamAvg;
+                document.getElementById('teamAvgScore').textContent = Math.round(teamAvgPct) + '%';
                 
                 // Render cards
                 if (userStats.length === 0) {
@@ -1678,16 +1698,16 @@
                                 <div class="team-stat-label">P&L</div>
                             </div>
                             <div>
-                                <div class="team-stat-value">${user.avgScore}</div>
-                                <div class="team-stat-label">Avg Score</div>
+                                <div class="team-stat-value">${Math.round(user.avgPct)}%</div>
+                                <div class="team-stat-label">(${user.avgRawScore.toFixed(1)}/${user.typicalQuestions})</div>
                             </div>
                             <div>
-                                <div class="team-stat-value">${user.perfectDays}</div>
-                                <div class="team-stat-label">Perfect Days</div>
+                                <div class="team-stat-value">${Math.round(user.perfectPct)}%</div>
+                                <div class="team-stat-label">Perfect (${user.perfectDays}/${user.days})</div>
                             </div>
                             <div>
                                 <div class="team-stat-value">${user.days}</div>
-                                <div class="team-stat-label">Total Days</div>
+                                <div class="team-stat-label">Days</div>
                             </div>
                         </div>
                     </div>
