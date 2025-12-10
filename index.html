@@ -856,7 +856,11 @@
     <div id="authScreen" class="auth-container">
         <h2>Trading Discipline Tracker</h2>
         
-        <div class="connection-section">
+        <div id="loadingState" class="hidden" style="text-align: center; padding: 20px; color: #888;">
+            Connecting...
+        </div>
+        
+        <div id="connectionSection" class="connection-section">
             <label>PocketBase URL</label>
             <div class="connection-row">
                 <input type="text" id="pbUrl" placeholder="http://127.0.0.1:8090">
@@ -903,6 +907,10 @@
                 </div>
                 <button type="submit" class="auth-btn">Create Account</button>
             </form>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="changeServerBtn" style="background: none; border: none; color: #667eea; cursor: pointer; font-size: 0.85em;">Change server</button>
+            </div>
         </div>
     </div>
     
@@ -1061,13 +1069,18 @@
         
         // Initialize
         async function init() {
+            setupAuthListeners();
+            setupAppListeners();
+            
             const savedUrl = localStorage.getItem(PB_URL_KEY);
             if (savedUrl) {
                 document.getElementById('pbUrl').value = savedUrl;
+                // Show loading, hide connection form
+                document.getElementById('loadingState').classList.remove('hidden');
+                document.getElementById('connectionSection').classList.add('hidden');
+                // Auto-connect if we have a saved URL
+                await connectToPocketBase();
             }
-            
-            setupAuthListeners();
-            setupAppListeners();
         }
         
         // Auth listeners
@@ -1085,6 +1098,16 @@
             
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
             document.getElementById('signupForm').addEventListener('submit', handleSignup);
+            document.getElementById('changeServerBtn').addEventListener('click', changeServer);
+        }
+        
+        function changeServer() {
+            localStorage.removeItem(PB_URL_KEY);
+            pb = null;
+            document.getElementById('pbUrl').value = '';
+            document.getElementById('authForms').classList.add('hidden');
+            document.getElementById('connectionSection').classList.remove('hidden');
+            hideAuthError();
         }
         
         async function connectToPocketBase() {
@@ -1093,6 +1116,10 @@
                 showAuthError('Please enter a PocketBase URL');
                 return;
             }
+            
+            // Show loading
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('connectionSection').classList.add('hidden');
             
             try {
                 pb = new PocketBase(url);
@@ -1105,11 +1132,15 @@
                     await loadUserData();
                     showMainApp();
                 } else {
+                    document.getElementById('loadingState').classList.add('hidden');
                     authForms.classList.remove('hidden');
                 }
                 
                 hideAuthError();
             } catch (err) {
+                // Show connection form again on error
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('connectionSection').classList.remove('hidden');
                 showAuthError('Connection failed: ' + err.message);
             }
         }
