@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Discipline Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        h1 {
+            font-size: 1.5em;
+            color: #fff;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .header-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+        
+        .header-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .header-btn.active {
+            border-color: #667eea;
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .header-btn.user-btn {
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+        
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+        
+        .tab-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn:hover {
+            border-color: #667eea;
+            color: #fff;
+        }
+        
+        .tab-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: #fff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Auth styles */
+        .auth-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: #252542;
+            padding: 30px;
+            border-radius: 12px;
+        }
+        
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 25px;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #444;
+            color: #888;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        
+        .auth-tab.active {
+            border-bottom-color: #667eea;
+            color: #fff;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #eee;
+            font-size: 1em;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        
+        .auth-btn:hover {
+            background: #5a6fd6;
+        }
+        
+        .auth-error {
+            background: #3b2020;
+            color: #ef4444;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            display: none;
+        }
+        
+        .auth-error.show {
+            display: block;
+        }
+        
+        .connection-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1a1a2e;
+            border-radius: 8px;
+        }
+        
+        .connection-section label {
+            display: block;
+            margin-bottom: 8px;
+            color: #888;
+            font-size: 0.85em;
+        }
+        
+        .connection-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .connection-row input {
+            flex: 1;
+            padding: 10px;
+            background: #252542;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #eee;
+            font-size: 0.9em;
+        }
+        
+        .connection-row button {
+            padding: 10px 15px;
+            background: #667eea;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        
+        /* Cards */
+        .card {
+            background: #252542;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .date-input-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .date-input-row label {
+            color: #888;
+            font-size: 1em;
+        }
+        
+        .date-picker, .pnl-input {
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #eee;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .pnl-input {
+            width: 100px;
+        }
+        
+        .date-picker:focus, .pnl-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+        }
+        
+        .question-text {
+            font-size: 1.05em;
+            flex: 1;
+            padding-right: 15px;
+        }
+        
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .toggle-btn {
+            padding: 8px 18px;
+            border: 2px solid #444;
+            background: transparent;
+            color: #888;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+        
+        .toggle-btn:hover {
+            border-color: #666;
+        }
+        
+        .toggle-btn.yes.selected {
+            background: #22c55e;
+            border-color: #22c55e;
+            color: #fff;
+        }
+        
+        .toggle-btn.no.selected {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: #fff;
+        }
+        
+        .score-display {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        
+        .score-number {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .score-perfect { color: #22c55e; }
+        .score-good { color: #22c55e; }
+        .score-ok { color: #f59e0b; }
+        .score-bad { color: #ef4444; }
+        
+        .notes-section {
+            margin-top: 20px;
+        }
+        
+        .notes-section label {
+            display: block;
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .notes-section textarea {
+            width: 100%;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 12px;
+            color: #eee;
+            font-family: inherit;
+            font-size: 0.95em;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .save-btn {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.2s;
+        }
+        
+        .save-btn:hover {
+            background: #5a6fd6;
+        }
+        
+        /* Calendar */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-header h2 {
+            font-size: 1.1em;
+            color: #fff;
+            margin: 0;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .calendar-nav button {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        
+        .calendar-nav button:hover {
+            border-color: #667eea;
+            color: #fff;
+        }
+        
+        .calendar-month {
+            font-size: 1.1em;
+            color: #fff;
+            min-width: 150px;
+            text-align: center;
+        }
+        
+        .monthly-total {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #1a1a2e;
+            border-radius: 8px;
+        }
+        
+        .monthly-total-label {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        
+        .monthly-total-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .monthly-total-value.positive { color: #22c55e; }
+        .monthly-total-value.negative { color: #ef4444; }
+        .monthly-total-value.zero { color: #888; }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+        
+        .calendar-day-header {
+            text-align: center;
+            color: #666;
+            font-size: 0.75em;
+            padding: 8px 4px;
+            font-weight: bold;
+        }
+        
+        .calendar-day {
+            background: #1a1a2e;
+            border-radius: 6px;
+            padding: 8px 4px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8em;
+        }
+        
+        .calendar-day.empty { background: transparent; }
+        .calendar-day.has-entry { cursor: pointer; }
+        .calendar-day.has-entry:hover { background: #333355; }
+        
+        .calendar-day-number {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+        
+        .calendar-day-pnl {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .calendar-day-pnl.positive { color: #22c55e; }
+        .calendar-day-pnl.negative { color: #ef4444; }
+        .calendar-day-pnl.zero { color: #666; }
+        
+        .calendar-day-score {
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 2px;
+        }
+        
+        .weekly-total {
+            background: #333355;
+            border-radius: 6px;
+            padding: 8px 4px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .weekly-total-label {
+            font-size: 0.65em;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .weekly-total-value {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .weekly-total-value.positive { color: #22c55e; }
+        .weekly-total-value.negative { color: #ef4444; }
+        .weekly-total-value.zero { color: #666; }
+        
+        /* History */
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .history-header h2 {
+            font-size: 1.1em;
+            color: #fff;
+        }
+        
+        .summary-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            color: #888;
+        }
+        
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .history-item:last-child { border-bottom: none; }
+        
+        .history-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .history-pnl {
+            font-weight: bold;
+            font-size: 0.9em;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        .history-pnl.positive { color: #22c55e; }
+        .history-pnl.negative { color: #ef4444; }
+        .history-pnl.zero { color: #666; }
+        
+        .history-score {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #555;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 12px 16px;
+            margin: -12px -16px -12px 0;
+            touch-action: manipulation;
+        }
+        
+        .delete-btn:hover { color: #ef4444; }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 30px 0;
+        }
+        
+        /* Team Dashboard */
+        .team-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .team-member-card {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .team-member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .team-member-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .team-member-name.you {
+            color: #667eea;
+        }
+        
+        .team-member-streak {
+            font-size: 0.85em;
+            color: #888;
+        }
+        
+        .team-member-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+        
+        .team-stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .team-stat-label {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .team-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+        
+        .team-summary h3 {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        
+        .team-summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+        
+        .team-summary-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .team-summary-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active { display: flex; }
+        
+        .modal {
+            background: #252542;
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal h2 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        
+        .modal-section {
+            margin-bottom: 20px;
+        }
+        
+        .modal-section label {
+            display: block;
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .modal-section input {
+            width: 100%;
+            background: #1a1a2e;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #eee;
+            font-size: 1em;
+        }
+        
+        .modal-section input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .question-list { margin-bottom: 15px; }
+        
+        .question-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .question-item input { flex: 1; }
+        
+        .question-item .remove-q-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .question-item .remove-q-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .add-question-btn {
+            background: transparent;
+            border: 1px dashed #444;
+            color: #888;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .add-question-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .modal-btn.cancel {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+        }
+        
+        .modal-btn.save {
+            background: #667eea;
+            border: none;
+            color: #fff;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- Auth Screen -->
+    <div id="authScreen" class="auth-container">
+        <h2>Trading Discipline Tracker</h2>
+        
+        <div class="connection-section">
+            <label>PocketBase URL</label>
+            <div class="connection-row">
+                <input type="text" id="pbUrl" placeholder="http://127.0.0.1:8090">
+                <button id="connectBtn">Connect</button>
+            </div>
+        </div>
+        
+        <div class="auth-error" id="authError"></div>
+        
+        <div id="authForms" class="hidden">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+            
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="signupPassword" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="signupPasswordConfirm" required>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div id="mainApp" class="container hidden">
+        <div class="header-row">
+            <h1>Discipline Tracker</h1>
+            <div class="header-buttons">
+                <button class="header-btn" id="settingsBtn">⚙ Settings</button>
+                <button class="header-btn user-btn" id="userBtn">User</button>
+            </div>
+        </div>
+        <p class="subtitle" id="subtitleText">1 micro. Wait for setups. Follow the plan.</p>
+        
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="myTracker">📊 My Tracker</button>
+            <button class="tab-btn" data-tab="team">👥 Team</button>
+        </div>
+        
+        <!-- My Tracker Tab -->
+        <div class="tab-content active" id="myTrackerTab">
+            <div class="card">
+                <div class="date-input-row">
+                    <label>Date:</label>
+                    <input type="date" id="entryDate" class="date-picker">
+                    <label style="margin-left: 20px;">P&L:</label>
+                    <input type="number" id="pnlInput" class="pnl-input" placeholder="$0" step="0.01">
+                </div>
+                
+                <div id="questionsContainer"></div>
+                
+                <div class="score-display">
+                    <div class="score-number" id="todayScore">0/0</div>
+                </div>
+                
+                <div class="notes-section">
+                    <label>Quick note (optional):</label>
+                    <textarea id="notes" placeholder="What almost got you? What did you resist?"></textarea>
+                </div>
+                
+                <button class="save-btn" id="saveBtn">Save Entry</button>
+            </div>
+            
+            <div class="card">
+                <div class="calendar-header">
+                    <h2>📅 Calendar</h2>
+                    <div class="calendar-nav">
+                        <button id="prevMonth">←</button>
+                        <span class="calendar-month" id="calendarMonth"></span>
+                        <button id="nextMonth">→</button>
+                    </div>
+                </div>
+                <div class="monthly-total">
+                    <div class="monthly-total-label">Monthly P&L</div>
+                    <div class="monthly-total-value zero" id="monthlyTotal">$0.00</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+            
+            <div class="card">
+                <div class="history-header">
+                    <h2>History</h2>
+                </div>
+                <div class="summary-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="totalDays">0</div>
+                        <div class="stat-label">Days</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="perfectDays">0</div>
+                        <div class="stat-label" id="perfectLabel">Perfect</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="avgScore">0</div>
+                        <div class="stat-label">Avg Score</div>
+                    </div>
+                </div>
+                <div class="history-list" id="historyList"></div>
+            </div>
+        </div>
+        
+        <!-- Team Tab -->
+        <div class="tab-content" id="teamTab">
+            <div class="team-summary" id="teamSummary">
+                <h3>📈 Team This Month</h3>
+                <div class="team-summary-stats">
+                    <div>
+                        <div class="team-summary-value" id="teamMembers">0</div>
+                        <div class="team-summary-label">Members</div>
+                    </div>
+                    <div>
+                        <div class="team-summary-value" id="teamTotalPnl">$0</div>
+                        <div class="team-summary-label">Combined P&L</div>
+                    </div>
+                    <div>
+                        <div class="team-summary-value" id="teamAvgScore">0</div>
+                        <div class="team-summary-label">Avg Discipline</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="team-grid" id="teamGrid">
+                <div class="empty-state">Loading team data...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <h2>⚙ Settings</h2>
+            <div class="modal-section">
+                <label>Subtitle Text</label>
+                <input type="text" id="settingsSubtitle">
+            </div>
+            <div class="modal-section">
+                <label>Questions</label>
+                <div class="question-list" id="questionList"></div>
+                <button class="add-question-btn" id="addQuestionBtn">+ Add Question</button>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="cancelSettings">Cancel</button>
+                <button class="modal-btn save" id="saveSettings">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Constants
+        const PB_URL_KEY = 'discipline_tracker_pb_url';
+        const DEFAULT_CONFIG = {
+            subtitle: '1 micro. Wait for setups. Follow the plan.',
+            questions: [
+                'Did I wait for my setup?',
+                'Did I stay at 1 micro all day?',
+                'Did I stop when I planned to?',
+                'Did I keep my P&L hidden during the session?'
+            ]
+        };
+        
+        // State
+        let pb = null;
+        let currentUser = null;
+        let config = { ...DEFAULT_CONFIG };
+        let configRecordId = null;
+        let entries = [];
+        let answers = {};
+        let currentCalendarDate = new Date();
+        let tempQuestions = [];
+        
+        // DOM Elements
+        const authScreen = document.getElementById('authScreen');
+        const mainApp = document.getElementById('mainApp');
+        const authError = document.getElementById('authError');
+        const authForms = document.getElementById('authForms');
+        
+        // Initialize
+        async function init() {
+            const savedUrl = localStorage.getItem(PB_URL_KEY);
+            if (savedUrl) {
+                document.getElementById('pbUrl').value = savedUrl;
+            }
+            
+            setupAuthListeners();
+            setupAppListeners();
+        }
+        
+        // Auth listeners
+        function setupAuthListeners() {
+            document.getElementById('connectBtn').addEventListener('click', connectToPocketBase);
+            
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab + 'Form').classList.add('active');
+                });
+            });
+            
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('signupForm').addEventListener('submit', handleSignup);
+        }
+        
+        async function connectToPocketBase() {
+            const url = document.getElementById('pbUrl').value.trim();
+            if (!url) {
+                showAuthError('Please enter a PocketBase URL');
+                return;
+            }
+            
+            try {
+                pb = new PocketBase(url);
+                await pb.health.check();
+                localStorage.setItem(PB_URL_KEY, url);
+                
+                // Check if already logged in
+                if (pb.authStore.isValid) {
+                    currentUser = pb.authStore.model;
+                    await loadUserData();
+                    showMainApp();
+                } else {
+                    authForms.classList.remove('hidden');
+                }
+                
+                hideAuthError();
+            } catch (err) {
+                showAuthError('Connection failed: ' + err.message);
+            }
+        }
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const authData = await pb.collection('users').authWithPassword(email, password);
+                currentUser = authData.record;
+                await loadUserData();
+                showMainApp();
+            } catch (err) {
+                showAuthError('Login failed: ' + err.message);
+            }
+        }
+        
+        async function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+            
+            if (password !== passwordConfirm) {
+                showAuthError('Passwords do not match');
+                return;
+            }
+            
+            try {
+                await pb.collection('users').create({
+                    email,
+                    password,
+                    passwordConfirm,
+                    name
+                });
+                
+                // Auto login
+                const authData = await pb.collection('users').authWithPassword(email, password);
+                currentUser = authData.record;
+                
+                // Create default config for new user
+                await createDefaultConfig();
+                await loadUserData();
+                showMainApp();
+            } catch (err) {
+                showAuthError('Signup failed: ' + err.message);
+            }
+        }
+        
+        function showAuthError(msg) {
+            authError.textContent = msg;
+            authError.classList.add('show');
+        }
+        
+        function hideAuthError() {
+            authError.classList.remove('show');
+        }
+        
+        function showMainApp() {
+            authScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            document.getElementById('userBtn').textContent = currentUser.name || currentUser.email;
+        }
+        
+        // App listeners
+        function setupAppListeners() {
+            // Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
+                    
+                    if (btn.dataset.tab === 'team') {
+                        loadTeamData();
+                    }
+                });
+            });
+            
+            // Date picker
+            document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('entryDate').addEventListener('change', (e) => {
+                loadEntryForDate(e.target.value);
+            });
+            
+            // Save
+            document.getElementById('saveBtn').addEventListener('click', saveEntry);
+            
+            // Calendar nav
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+                renderCalendar();
+            });
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+                renderCalendar();
+            });
+            
+            // History delete
+            document.getElementById('historyList').addEventListener('click', async (e) => {
+                const btn = e.target.closest('.delete-btn');
+                if (btn && confirm('Delete this entry?')) {
+                    await deleteEntry(btn.dataset.date);
+                }
+            });
+            
+            // Settings
+            document.getElementById('settingsBtn').addEventListener('click', openSettings);
+            document.getElementById('cancelSettings').addEventListener('click', () => {
+                document.getElementById('settingsModal').classList.remove('active');
+            });
+            document.getElementById('saveSettings').addEventListener('click', saveSettings);
+            document.getElementById('addQuestionBtn').addEventListener('click', () => {
+                tempQuestions.push('');
+                renderQuestionList();
+            });
+            
+            // User/logout
+            document.getElementById('userBtn').addEventListener('click', () => {
+                if (confirm('Logout?')) {
+                    pb.authStore.clear();
+                    location.reload();
+                }
+            });
+        }
+        
+        // Data loading
+        async function loadUserData() {
+            await loadConfig();
+            await loadEntries();
+            initAnswers();
+            renderSubtitle();
+            renderQuestions();
+            loadEntryForDate(document.getElementById('entryDate').value);
+            renderHistory();
+            renderCalendar();
+        }
+        
+        async function loadConfig() {
+            try {
+                const records = await pb.collection('config').getList(1, 1, {
+                    filter: `user = "${currentUser.id}"`
+                });
+                
+                if (records.items.length > 0) {
+                    const record = records.items[0];
+                    configRecordId = record.id;
+                    config = {
+                        subtitle: record.subtitle || DEFAULT_CONFIG.subtitle,
+                        questions: record.questions || DEFAULT_CONFIG.questions
+                    };
+                } else {
+                    await createDefaultConfig();
+                }
+            } catch (err) {
+                console.error('Failed to load config:', err);
+                config = { ...DEFAULT_CONFIG };
+            }
+        }
+        
+        async function createDefaultConfig() {
+            try {
+                const record = await pb.collection('config').create({
+                    user: currentUser.id,
+                    subtitle: DEFAULT_CONFIG.subtitle,
+                    questions: DEFAULT_CONFIG.questions
+                });
+                configRecordId = record.id;
+                config = { ...DEFAULT_CONFIG };
+            } catch (err) {
+                console.error('Failed to create config:', err);
+            }
+        }
+        
+        async function loadEntries() {
+            try {
+                const records = await pb.collection('entries').getFullList({
+                    filter: `user = "${currentUser.id}"`,
+                    sort: '-date'
+                });
+                
+                entries = records.map(r => ({
+                    id: r.id,
+                    date: r.date,
+                    answers: r.answers || [],
+                    score: r.score || 0,
+                    totalQuestions: r.total_questions || config.questions.length,
+                    pnl: r.pnl,
+                    notes: r.notes || ''
+                }));
+            } catch (err) {
+                console.error('Failed to load entries:', err);
+                entries = [];
+            }
+        }
+        
+        // Render functions
+        function initAnswers() {
+            answers = {};
+            config.questions.forEach((_, i) => answers[i] = null);
+        }
+        
+        function renderSubtitle() {
+            document.getElementById('subtitleText').textContent = config.subtitle;
+        }
+        
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = config.questions.map((q, i) => `
+                <div class="question">
+                    <span class="question-text">${i + 1}. ${q}</span>
+                    <div class="toggle-group">
+                        <button class="toggle-btn yes ${answers[i] === 'yes' ? 'selected' : ''}" data-q="${i}" data-val="yes">Yes</button>
+                        <button class="toggle-btn no ${answers[i] === 'no' ? 'selected' : ''}" data-q="${i}" data-val="no">No</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    answers[parseInt(btn.dataset.q)] = btn.dataset.val;
+                    renderQuestions();
+                    updateScore();
+                });
+            });
+            
+            updateScore();
+        }
+        
+        function updateScore() {
+            const total = config.questions.length;
+            const yesCount = Object.values(answers).filter(a => a === 'yes').length;
+            const el = document.getElementById('todayScore');
+            el.textContent = `${yesCount}/${total}`;
+            el.className = 'score-number ' + getScoreClass(yesCount, total);
+        }
+        
+        function getScoreClass(score, total) {
+            if (total === 0) return 'score-ok';
+            const pct = score / total;
+            if (pct === 1) return 'score-perfect';
+            if (pct >= 0.75) return 'score-good';
+            if (pct >= 0.5) return 'score-ok';
+            return 'score-bad';
+        }
+        
+        function loadEntryForDate(dateKey) {
+            const entry = entries.find(e => e.date === dateKey);
+            initAnswers();
+            
+            if (entry) {
+                entry.answers.forEach((val, i) => {
+                    if (i < config.questions.length) answers[i] = val;
+                });
+                document.getElementById('notes').value = entry.notes || '';
+                document.getElementById('pnlInput').value = entry.pnl ?? '';
+            } else {
+                document.getElementById('notes').value = '';
+                document.getElementById('pnlInput').value = '';
+            }
+            
+            renderQuestions();
+        }
+        
+        async function saveEntry() {
+            const total = config.questions.length;
+            if (total > 0 && Object.values(answers).some(a => a === null)) {
+                alert('Please answer all questions.');
+                return;
+            }
+            
+            const date = document.getElementById('entryDate').value;
+            const pnlVal = document.getElementById('pnlInput').value;
+            const yesCount = Object.values(answers).filter(a => a === 'yes').length;
+            
+            const data = {
+                user: currentUser.id,
+                date,
+                answers: Object.values(answers),
+                score: yesCount,
+                total_questions: total,
+                pnl: pnlVal !== '' ? parseFloat(pnlVal) : null,
+                notes: document.getElementById('notes').value.trim()
+            };
+            
+            try {
+                const existing = entries.find(e => e.date === date);
+                if (existing?.id) {
+                    await pb.collection('entries').update(existing.id, data);
+                } else {
+                    await pb.collection('entries').create(data);
+                }
+                
+                await loadEntries();
+                renderHistory();
+                renderCalendar();
+                
+                const btn = document.getElementById('saveBtn');
+                btn.textContent = 'Saved ✓';
+                setTimeout(() => btn.textContent = 'Save Entry', 2000);
+            } catch (err) {
+                alert('Failed to save: ' + err.message);
+            }
+        }
+        
+        async function deleteEntry(date) {
+            const entry = entries.find(e => e.date === date);
+            if (!entry?.id) return;
+            
+            try {
+                await pb.collection('entries').delete(entry.id);
+                await loadEntries();
+                
+                if (date === document.getElementById('entryDate').value) {
+                    loadEntryForDate(date);
+                }
+                
+                renderHistory();
+                renderCalendar();
+            } catch (err) {
+                alert('Failed to delete: ' + err.message);
+            }
+        }
+        
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            const total = config.questions.length;
+            
+            document.getElementById('perfectLabel').textContent = `Perfect (${total}/${total})`;
+            
+            if (entries.length === 0) {
+                list.innerHTML = '<div class="empty-state">No entries yet.</div>';
+                document.getElementById('totalDays').textContent = '0';
+                document.getElementById('perfectDays').textContent = '0';
+                document.getElementById('avgScore').textContent = '0';
+                return;
+            }
+            
+            const totalDays = entries.length;
+            const perfectDays = entries.filter(e => e.score === (e.totalQuestions || total)).length;
+            const avgScore = (entries.reduce((sum, e) => sum + (e.score || 0), 0) / totalDays).toFixed(1);
+            
+            document.getElementById('totalDays').textContent = totalDays;
+            document.getElementById('perfectDays').textContent = perfectDays;
+            document.getElementById('avgScore').textContent = avgScore;
+            
+            list.innerHTML = entries.map(entry => {
+                const d = new Date(entry.date + 'T12:00:00');
+                const displayDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const entryTotal = entry.totalQuestions || total;
+                const pnl = entry.pnl || 0;
+                
+                return `
+                    <div class="history-item">
+                        <span class="history-date">${displayDate}</span>
+                        <span class="history-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</span>
+                        <span class="history-score ${getScoreClass(entry.score, entryTotal)}">${entry.score}/${entryTotal}</span>
+                        <button class="delete-btn" data-date="${entry.date}">×</button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const total = config.questions.length;
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            const monthEntries = entries.filter(e => {
+                const d = new Date(e.date + 'T12:00:00');
+                return d.getFullYear() === year && d.getMonth() === month;
+            });
+            
+            const monthlyPnl = monthEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
+            const monthlyEl = document.getElementById('monthlyTotal');
+            monthlyEl.textContent = formatPnl(monthlyPnl);
+            monthlyEl.className = 'monthly-total-value ' + getPnlClass(monthlyPnl);
+            
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Week'].forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let weekPnl = 0;
+            let dayOfWeek = 0;
+            
+            for (let i = 0; i < firstDay; i++) {
+                grid.appendChild(Object.assign(document.createElement('div'), { className: 'calendar-day empty' }));
+                dayOfWeek++;
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const entry = entries.find(e => e.date === dateStr);
+                
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day' + (entry ? ' has-entry' : '');
+                dayEl.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+                
+                if (entry) {
+                    const pnl = entry.pnl || 0;
+                    weekPnl += pnl;
+                    dayEl.innerHTML += `
+                        <div class="calendar-day-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</div>
+                        <div class="calendar-day-score">${entry.score}/${entry.totalQuestions || total}</div>
+                    `;
+                    dayEl.addEventListener('click', () => {
+                        document.getElementById('entryDate').value = dateStr;
+                        loadEntryForDate(dateStr);
+                    });
+                }
+                
+                grid.appendChild(dayEl);
+                dayOfWeek++;
+                
+                if (dayOfWeek === 7) {
+                    const weekEl = document.createElement('div');
+                    weekEl.className = 'weekly-total';
+                    weekEl.innerHTML = `
+                        <div class="weekly-total-label">WEEK</div>
+                        <div class="weekly-total-value ${getPnlClass(weekPnl)}">${formatPnlShort(weekPnl)}</div>
+                    `;
+                    grid.appendChild(weekEl);
+                    weekPnl = 0;
+                    dayOfWeek = 0;
+                }
+            }
+            
+            if (dayOfWeek > 0) {
+                while (dayOfWeek < 7) {
+                    grid.appendChild(Object.assign(document.createElement('div'), { className: 'calendar-day empty' }));
+                    dayOfWeek++;
+                }
+                const weekEl = document.createElement('div');
+                weekEl.className = 'weekly-total';
+                weekEl.innerHTML = `
+                    <div class="weekly-total-label">WEEK</div>
+                    <div class="weekly-total-value ${getPnlClass(weekPnl)}">${formatPnlShort(weekPnl)}</div>
+                `;
+                grid.appendChild(weekEl);
+            }
+        }
+        
+        // Team data
+        async function loadTeamData() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = '<div class="empty-state">Loading team data...</div>';
+            
+            try {
+                // Get all users
+                const users = await pb.collection('users').getFullList();
+                
+                // Get current month's entries for all users
+                const now = new Date();
+                const startOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+                
+                const allEntries = await pb.collection('entries').getFullList({
+                    filter: `date >= "${startOfMonth}"`
+                });
+                
+                // Group by user
+                const userStats = users.map(user => {
+                    const userEntries = allEntries.filter(e => e.user === user.id);
+                    const totalPnl = userEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
+                    const avgScore = userEntries.length > 0 
+                        ? userEntries.reduce((sum, e) => sum + (e.score || 0), 0) / userEntries.length 
+                        : 0;
+                    const totalQuestions = userEntries.length > 0 
+                        ? userEntries[0].total_questions || 4 
+                        : 4;
+                    
+                    return {
+                        id: user.id,
+                        name: user.name || user.email,
+                        isCurrentUser: user.id === currentUser.id,
+                        days: userEntries.length,
+                        pnl: totalPnl,
+                        avgScore: avgScore.toFixed(1),
+                        totalQuestions,
+                        perfectDays: userEntries.filter(e => e.score === (e.total_questions || 4)).length
+                    };
+                }).filter(u => u.days > 0);
+                
+                // Sort by P&L
+                userStats.sort((a, b) => b.pnl - a.pnl);
+                
+                // Team totals
+                const teamPnl = userStats.reduce((sum, u) => sum + u.pnl, 0);
+                const teamAvg = userStats.length > 0 
+                    ? (userStats.reduce((sum, u) => sum + parseFloat(u.avgScore), 0) / userStats.length).toFixed(1)
+                    : '0';
+                
+                document.getElementById('teamMembers').textContent = userStats.length;
+                document.getElementById('teamTotalPnl').textContent = formatPnl(teamPnl);
+                document.getElementById('teamTotalPnl').className = 'team-summary-value';
+                document.getElementById('teamAvgScore').textContent = teamAvg;
+                
+                // Render cards
+                if (userStats.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">No team activity this month yet.</div>';
+                    return;
+                }
+                
+                grid.innerHTML = userStats.map(user => `
+                    <div class="team-member-card">
+                        <div class="team-member-header">
+                            <span class="team-member-name ${user.isCurrentUser ? 'you' : ''}">${user.name}${user.isCurrentUser ? ' (you)' : ''}</span>
+                            <span class="team-member-streak">${user.days} days tracked</span>
+                        </div>
+                        <div class="team-member-stats">
+                            <div>
+                                <div class="team-stat-value ${getPnlClass(user.pnl)}">${formatPnlShort(user.pnl)}</div>
+                                <div class="team-stat-label">P&L</div>
+                            </div>
+                            <div>
+                                <div class="team-stat-value">${user.avgScore}</div>
+                                <div class="team-stat-label">Avg Score</div>
+                            </div>
+                            <div>
+                                <div class="team-stat-value">${user.perfectDays}</div>
+                                <div class="team-stat-label">Perfect Days</div>
+                            </div>
+                            <div>
+                                <div class="team-stat-value">${user.days}</div>
+                                <div class="team-stat-label">Total Days</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (err) {
+                console.error('Failed to load team data:', err);
+                grid.innerHTML = '<div class="empty-state">Failed to load team data.</div>';
+            }
+        }
+        
+        // Settings
+        function openSettings() {
+            tempQuestions = [...config.questions];
+            document.getElementById('settingsSubtitle').value = config.subtitle;
+            renderQuestionList();
+            document.getElementById('settingsModal').classList.add('active');
+        }
+        
+        function renderQuestionList() {
+            const list = document.getElementById('questionList');
+            list.innerHTML = tempQuestions.map((q, i) => `
+                <div class="question-item">
+                    <input type="text" value="${q}" data-index="${i}">
+                    <button class="remove-q-btn" data-index="${i}">Remove</button>
+                </div>
+            `).join('');
+            
+            list.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    tempQuestions[parseInt(e.target.dataset.index)] = e.target.value;
+                });
+            });
+            
+            list.querySelectorAll('.remove-q-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tempQuestions.splice(parseInt(btn.dataset.index), 1);
+                    renderQuestionList();
+                });
+            });
+        }
+        
+        async function saveSettings() {
+            const newSubtitle = document.getElementById('settingsSubtitle').value.trim();
+            const validQuestions = tempQuestions.filter(q => q.trim() !== '');
+            
+            if (validQuestions.length === 0) {
+                alert('Please add at least one question.');
+                return;
+            }
+            
+            config.subtitle = newSubtitle || DEFAULT_CONFIG.subtitle;
+            config.questions = validQuestions;
+            
+            try {
+                await pb.collection('config').update(configRecordId, {
+                    subtitle: config.subtitle,
+                    questions: config.questions
+                });
+                
+                initAnswers();
+                renderSubtitle();
+                renderQuestions();
+                renderHistory();
+                renderCalendar();
+                
+                document.getElementById('settingsModal').classList.remove('active');
+            } catch (err) {
+                alert('Failed to save settings: ' + err.message);
+            }
+        }
+        
+        // Utilities
+        function formatPnl(value) {
+            if (!value) return '$0.00';
+            const sign = value >= 0 ? '+' : '';
+            return sign + '$' + value.toFixed(2);
+        }
+        
+        function formatPnlShort(value) {
+            if (!value) return '$0';
+            const sign = value >= 0 ? '+' : '';
+            if (Math.abs(value) >= 1000) return sign + '$' + (value / 1000).toFixed(1) + 'k';
+            return sign + '$' + Math.round(value);
+        }
+        
+        function getPnlClass(value) {
+            if (value > 0) return 'positive';
+            if (value < 0) return 'negative';
+            return 'zero';
+        }
+        
+        // Start
+        init();
+    </script>
+</body>
+</html>
