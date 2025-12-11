@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Discipline Tracker</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1000,13 +1001,14 @@
                 <button class="save-btn" id="saveBtn">Save Entry</button>
             </div>
             
-            <div class="card">
+            <div class="card" id="calendarCard">
                 <div class="calendar-header">
                     <h2>📅 Calendar</h2>
                     <div class="calendar-nav">
                         <button id="prevMonth">←</button>
                         <span class="calendar-month" id="calendarMonth"></span>
                         <button id="nextMonth">→</button>
+                        <button id="screenshotBtn" title="Save as image">📷</button>
                     </div>
                 </div>
                 <div class="monthly-total">
@@ -1302,6 +1304,9 @@
                 currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
                 renderCalendar();
             });
+            
+            // Screenshot
+            document.getElementById('screenshotBtn').addEventListener('click', screenshotCalendar);
             
             // History delete
             document.getElementById('historyList').addEventListener('click', async (e) => {
@@ -1896,6 +1901,45 @@
             if (value > 0) return 'positive';
             if (value < 0) return 'negative';
             return 'zero';
+        }
+        
+        async function screenshotCalendar() {
+            const btn = document.getElementById('screenshotBtn');
+            const originalText = btn.textContent;
+            btn.textContent = '...';
+            
+            try {
+                const calendarCard = document.getElementById('calendarCard');
+                const canvas = await html2canvas(calendarCard, {
+                    backgroundColor: '#252542',
+                    scale: 2
+                });
+                
+                // Convert to blob and copy to clipboard
+                canvas.toBlob(async (blob) => {
+                    try {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ 'image/png': blob })
+                        ]);
+                        btn.textContent = '✓';
+                        setTimeout(() => btn.textContent = originalText, 1500);
+                    } catch (err) {
+                        console.error('Clipboard write failed:', err);
+                        // Fallback to download
+                        const link = document.createElement('a');
+                        const monthName = document.getElementById('calendarMonth').textContent;
+                        link.download = `trading-calendar-${monthName.replace(' ', '-')}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        btn.textContent = '✓';
+                        setTimeout(() => btn.textContent = originalText, 1500);
+                    }
+                }, 'image/png');
+            } catch (err) {
+                console.error('Screenshot failed:', err);
+                btn.textContent = '✗';
+                setTimeout(() => btn.textContent = originalText, 1500);
+            }
         }
         
         // Start
