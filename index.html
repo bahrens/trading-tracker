@@ -1886,8 +1886,10 @@
         function formatPnlShort(value) {
             if (!value) return '$0';
             const sign = value >= 0 ? '+' : '';
-            if (Math.abs(value) >= 1000) return sign + '$' + (value / 1000).toFixed(1) + 'k';
-            return sign + '$' + Math.round(value);
+            const absVal = Math.abs(value);
+            if (absVal >= 1000) return sign + '$' + (value / 1000).toFixed(1) + 'k';
+            if (absVal >= 100) return sign + '$' + Math.round(value);
+            return sign + '$' + value.toFixed(2);
         }
         
         function getPnlClass(value) {
