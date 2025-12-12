@@ -1437,6 +1437,54 @@
             margin-top: 4px;
         }
         
+        /* Daily Chart (for early users) */
+        .daily-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            gap: 8px;
+            height: 150px;
+            padding: 20px 10px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+        }
+        
+        .daily-bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 45px;
+            height: 100%;
+        }
+        
+        .daily-bar {
+            width: 24px;
+            border-radius: 4px 4px 0 0;
+            margin-top: auto;
+            min-height: 5px;
+        }
+        
+        .daily-bar.perfect { background: #22c55e; }
+        .daily-bar.good { background: #84cc16; }
+        .daily-bar.ok { background: #f59e0b; }
+        .daily-bar.bad { background: #ef4444; }
+        
+        .daily-value {
+            font-size: 0.7em;
+            color: #fff;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        
+        .daily-label {
+            font-size: 0.65em;
+            color: #666;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+        
         /* Badges */
         .badges-grid {
             display: grid;
@@ -2824,8 +2872,43 @@
                 </div>
             `;
             
-            // ============ 2. DISCIPLINE TREND ============
+            // ============ 1.5 DAILY CHART (for early users) ============
+            // Show daily chart when less than 2 weeks of weekly trend data
             const weeklyTrend = calculateWeeklyTrend(entriesWithPct);
+            if (weeklyTrend.length < 2 && entriesWithPct.length >= 2) {
+                // Show last 14 days (or all if less)
+                const recentDays = [...entriesWithPct].sort((a, b) => a.date.localeCompare(b.date)).slice(-14);
+                
+                html += `
+                    <div class="metric-section">
+                        <div class="metric-title">📊 Daily Discipline</div>
+                        <div class="daily-chart">
+                            ${recentDays.map(day => {
+                                const d = new Date(day.date + 'T12:00:00');
+                                const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                const pct = Math.round(day.pct);
+                                let colorClass = 'bad';
+                                if (pct === 100) colorClass = 'perfect';
+                                else if (pct >= 80) colorClass = 'good';
+                                else if (pct >= 50) colorClass = 'ok';
+                                
+                                return `
+                                    <div class="daily-bar-container">
+                                        <div class="daily-bar ${colorClass}" style="height: ${pct}%"></div>
+                                        <div class="daily-value">${pct}%</div>
+                                        <div class="daily-label">${label}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="metric-insight">
+                            📅 ${14 - entriesWithPct.length > 0 ? `${14 - entriesWithPct.length} more days until weekly trends unlock` : 'Weekly trends coming soon'}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // ============ 2. DISCIPLINE TREND ============
             if (weeklyTrend.length >= 2) {
                 const trendDirection = weeklyTrend[weeklyTrend.length - 1].avg - weeklyTrend[0].avg;
                 html += `
