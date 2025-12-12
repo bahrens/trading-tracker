@@ -264,6 +264,137 @@
             margin-bottom: 25px;
         }
         
+        /* Intention Prompt */
+        .intention-prompt {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .intention-prompt.hidden {
+            display: none;
+        }
+        
+        .intention-icon {
+            font-size: 2em;
+        }
+        
+        .intention-text {
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+        
+        .intention-dismiss {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+        
+        .intention-dismiss:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Streak Display */
+        .streak-display {
+            background: #252542;
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .streak-fire {
+            font-size: 1.5em;
+        }
+        
+        .streak-count {
+            font-size: 2em;
+            font-weight: bold;
+            color: #f59e0b;
+        }
+        
+        .streak-label {
+            color: #888;
+            font-size: 1em;
+        }
+        
+        .streak-display.no-streak .streak-fire {
+            opacity: 0.3;
+        }
+        
+        .streak-display.no-streak .streak-count {
+            color: #666;
+        }
+        
+        /* Hide P&L Button */
+        .hide-pnl-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-left: auto;
+        }
+        
+        .hide-pnl-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+        
+        .hide-pnl-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: #fff;
+        }
+        
+        /* Outcome Section */
+        .outcome-section {
+            border-top: 1px solid #333;
+            margin-top: 20px;
+            padding-top: 15px;
+        }
+        
+        .outcome-section.hidden {
+            display: none;
+        }
+        
+        .outcome-header {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        /* Score Display Enhancement */
+        .score-display {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+        
+        .score-label {
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
         .date-input-row {
             display: flex;
             align-items: center;
@@ -505,11 +636,30 @@
             flex-direction: column;
             align-items: center;
             font-size: 0.85em;
+            border: 2px solid transparent;
         }
         
         .calendar-day.empty { background: transparent; }
         .calendar-day.has-entry { cursor: pointer; }
         .calendar-day.has-entry:hover { background: #333355; }
+        
+        /* Discipline-based coloring */
+        .calendar-day.discipline-perfect { 
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+        .calendar-day.discipline-good { 
+            border-color: #84cc16;
+            background: rgba(132, 204, 22, 0.05);
+        }
+        .calendar-day.discipline-ok { 
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+        .calendar-day.discipline-bad { 
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
         
         .calendar-day-number {
             color: #666;
@@ -517,14 +667,40 @@
             margin-bottom: 4px;
         }
         
-        .calendar-day-pnl {
+        /* Discipline score is now primary */
+        .calendar-day-discipline {
             font-weight: bold;
-            font-size: 0.95em;
+            font-size: 1em;
+        }
+        
+        .calendar-day-discipline.perfect { color: #22c55e; }
+        .calendar-day-discipline.good { color: #84cc16; }
+        .calendar-day-discipline.ok { color: #f59e0b; }
+        .calendar-day-discipline.bad { color: #ef4444; }
+        
+        /* P&L is now secondary */
+        .calendar-day-pnl {
+            font-size: 0.75em;
+            margin-top: 2px;
         }
         
         .calendar-day-pnl.positive { color: #22c55e; }
         .calendar-day-pnl.negative { color: #ef4444; }
         .calendar-day-pnl.zero { color: #666; }
+        
+        /* Hide P&L mode */
+        .pnl-hidden .calendar-day-pnl,
+        .pnl-hidden .calendar-day-extra .dd,
+        .pnl-hidden .monthly-total,
+        .pnl-hidden .weekly-total-value,
+        .pnl-hidden .history-pnl,
+        .pnl-hidden .history-drawdown,
+        .pnl-hidden #monthlyTotal,
+        .pnl-hidden .team-pnl,
+        .pnl-hidden .team-pnl-stat {
+            filter: blur(8px);
+            user-select: none;
+        }
         
         .calendar-day-score {
             font-size: 0.75em;
@@ -745,7 +921,7 @@
         
         .team-member-stats {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             text-align: center;
         }
@@ -760,6 +936,38 @@
             font-size: 0.75em;
             color: #666;
             margin-top: 4px;
+        }
+        
+        /* Team Leaderboard */
+        .team-leaderboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .leaderboard-item {
+            background: #252542;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .leaderboard-icon {
+            font-size: 1.3em;
+        }
+        
+        .leaderboard-label {
+            color: #888;
+            font-size: 0.85em;
+        }
+        
+        .leaderboard-value {
+            color: #fff;
+            font-weight: bold;
+            margin-left: auto;
         }
         
         .team-summary {
@@ -777,19 +985,59 @@
         
         .team-summary-stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             text-align: center;
         }
         
         .team-summary-value {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
         }
         
         .team-summary-label {
-            font-size: 0.85em;
+            font-size: 0.8em;
             opacity: 0.9;
+        }
+        
+        /* Member card discipline-first */
+        .team-member-discipline {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+        }
+        
+        .discipline-big {
+            font-size: 2.2em;
+            font-weight: bold;
+        }
+        
+        .discipline-big.perfect { color: #22c55e; }
+        .discipline-big.good { color: #84cc16; }
+        .discipline-big.ok { color: #f59e0b; }
+        .discipline-big.bad { color: #ef4444; }
+        
+        .discipline-details {
+            flex: 1;
+        }
+        
+        .discipline-streak {
+            font-size: 1.1em;
+            color: #f59e0b;
+            font-weight: bold;
+        }
+        
+        .discipline-streak.no-streak {
+            color: #666;
+        }
+        
+        .discipline-perfect {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 4px;
         }
         
         /* Modal */
@@ -1035,6 +1283,166 @@
             border-left-color: #f59e0b;
         }
         
+        /* Trend Chart */
+        .trend-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 150px;
+            padding: 20px 10px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .trend-bar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            height: 100%;
+        }
+        
+        .trend-bar {
+            width: 30px;
+            border-radius: 4px 4px 0 0;
+            margin-top: auto;
+            min-height: 5px;
+        }
+        
+        .trend-label {
+            font-size: 0.7em;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .trend-value {
+            font-size: 0.8em;
+            color: #fff;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        
+        /* Badges */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+        }
+        
+        .badge {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .badge.earned {
+            background: linear-gradient(135deg, #1a1a2e, #252542);
+            border: 1px solid #22c55e;
+        }
+        
+        .badge.locked {
+            opacity: 0.5;
+        }
+        
+        .badge-icon {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+        
+        .badge.locked .badge-icon {
+            filter: grayscale(100%);
+        }
+        
+        .badge-name {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        
+        .badge-desc {
+            font-size: 0.7em;
+            color: #888;
+        }
+        
+        /* Rule Breakdown */
+        .rule-breakdown {
+            background: #1a1a2e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .rule-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #252542;
+        }
+        
+        .rule-row:last-child {
+            border-bottom: none;
+        }
+        
+        .rule-rank {
+            width: 25px;
+            height: 25px;
+            background: #252542;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #888;
+            margin-right: 12px;
+        }
+        
+        .rule-text {
+            flex: 1;
+            font-size: 0.85em;
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .rule-stats {
+            text-align: right;
+            margin-left: 10px;
+        }
+        
+        .rule-fail-rate {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .rule-context {
+            font-size: 0.75em;
+            color: #666;
+            margin-left: 5px;
+        }
+        
+        /* Advanced Toggle */
+        .advanced-toggle {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .advanced-toggle:hover {
+            color: #667eea;
+        }
+        
+        .advanced-content {
+            margin-top: 15px;
+        }
+        
+        .advanced-content.hidden {
+            display: none;
+        }
+        
         .hidden { display: none !important; }
     </style>
 </head>
@@ -1115,29 +1523,51 @@
         <div class="tab-nav">
             <button class="tab-btn active" data-tab="myTracker">📊 My Tracker</button>
             <button class="tab-btn" data-tab="team">👥 Team</button>
-            <button class="tab-btn" data-tab="metrics">📈 Metrics</button>
+            <button class="tab-btn" data-tab="metrics">🎯 Progress</button>
         </div>
         
         <!-- My Tracker Tab -->
         <div class="tab-content active" id="myTrackerTab">
+            <!-- Daily Intention Prompt -->
+            <div class="intention-prompt" id="intentionPrompt">
+                <div class="intention-icon">🎯</div>
+                <div class="intention-text">Review your rules before trading today</div>
+                <button class="intention-dismiss" id="dismissIntention">I've reviewed them</button>
+            </div>
+            
+            <!-- Discipline Streak -->
+            <div class="streak-display" id="streakDisplay">
+                <span class="streak-fire">🔥</span>
+                <span class="streak-count" id="streakCount">0</span>
+                <span class="streak-label">day streak</span>
+            </div>
+            
             <div class="card">
                 <div class="date-input-row">
                     <label>Date:</label>
                     <input type="date" id="entryDate" class="date-picker">
-                </div>
-                <div class="date-input-row">
-                    <label>P&L:</label>
-                    <input type="number" id="pnlInput" class="pnl-input" placeholder="$0" step="0.01">
-                    <label style="margin-left: 10px;">Trades:</label>
-                    <input type="number" id="tradesInput" class="trades-input" placeholder="0" min="0" step="1">
-                    <label style="margin-left: 10px;">Max DD:</label>
-                    <input type="number" id="drawdownInput" class="drawdown-input" placeholder="$0" min="0" step="0.01">
+                    <button class="hide-pnl-btn" id="hidePnlBtn" title="Toggle P&L visibility">👁 Hide P&L</button>
                 </div>
                 
+                <!-- Discipline Questions FIRST -->
                 <div id="questionsContainer"></div>
                 
                 <div class="score-display">
                     <div class="score-number" id="todayScore">0/0</div>
+                    <div class="score-label">Discipline Score</div>
+                </div>
+                
+                <!-- Outcome Data AFTER (collapsible when hidden) -->
+                <div class="outcome-section" id="outcomeSection">
+                    <div class="outcome-header">📊 Outcome Data (optional)</div>
+                    <div class="date-input-row">
+                        <label>P&L:</label>
+                        <input type="number" id="pnlInput" class="pnl-input" placeholder="$0" step="0.01">
+                        <label style="margin-left: 10px;">Trades:</label>
+                        <input type="number" id="tradesInput" class="trades-input" placeholder="0" min="0" step="1">
+                        <label style="margin-left: 10px;">Max DD:</label>
+                        <input type="number" id="drawdownInput" class="drawdown-input" placeholder="$0" min="0" step="0.01">
+                    </div>
                 </div>
                 
                 <div class="notes-section">
@@ -1209,20 +1639,43 @@
         
         <!-- Team Tab -->
         <div class="tab-content" id="teamTab">
+            <!-- Discipline Leaderboard Callout -->
+            <div class="team-leaderboard" id="teamLeaderboard">
+                <div class="leaderboard-item">
+                    <span class="leaderboard-icon">🔥</span>
+                    <span class="leaderboard-label">Longest Streak:</span>
+                    <span class="leaderboard-value" id="leaderStreak">-</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-icon">🏆</span>
+                    <span class="leaderboard-label">Most Perfect Days:</span>
+                    <span class="leaderboard-value" id="leaderPerfect">-</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-icon">📈</span>
+                    <span class="leaderboard-label">Highest Discipline:</span>
+                    <span class="leaderboard-value" id="leaderDiscipline">-</span>
+                </div>
+            </div>
+            
             <div class="team-summary" id="teamSummary">
-                <h3>📈 Team This Month</h3>
+                <h3>👥 Team This Month</h3>
                 <div class="team-summary-stats">
                     <div>
                         <div class="team-summary-value" id="teamMembers">0</div>
                         <div class="team-summary-label">Members</div>
                     </div>
                     <div>
-                        <div class="team-summary-value" id="teamTotalPnl">$0</div>
-                        <div class="team-summary-label">Combined P&L</div>
+                        <div class="team-summary-value" id="teamAvgScore">0%</div>
+                        <div class="team-summary-label">Avg Discipline</div>
                     </div>
                     <div>
-                        <div class="team-summary-value" id="teamAvgScore">0</div>
-                        <div class="team-summary-label">Avg Discipline</div>
+                        <div class="team-summary-value" id="teamPerfectDays">0</div>
+                        <div class="team-summary-label">Combined Perfect Days</div>
+                    </div>
+                    <div>
+                        <div class="team-summary-value team-pnl" id="teamTotalPnl">$0</div>
+                        <div class="team-summary-label">Combined P&L</div>
                     </div>
                 </div>
             </div>
@@ -1235,8 +1688,8 @@
         <!-- Metrics Tab -->
         <div class="tab-content" id="metricsTab">
             <div class="card">
-                <h2 style="margin-bottom: 20px;">📈 Performance Metrics</h2>
-                <p style="color: #888; margin-bottom: 25px;">Analyzing correlations between discipline and trading outcomes</p>
+                <h2 style="margin-bottom: 20px;">🎯 Discipline Progress</h2>
+                <p style="color: #888; margin-bottom: 25px;">Track your journey to consistent rule-following</p>
                 
                 <div id="metricsContent">
                     <div class="empty-state">Loading metrics...</div>
@@ -1474,6 +1927,34 @@
             
             // Screenshot
             document.getElementById('screenshotBtn').addEventListener('click', screenshotCalendar);
+            
+            // Hide P&L toggle
+            const hidePnlBtn = document.getElementById('hidePnlBtn');
+            const savedHidePnl = localStorage.getItem('hidePnl') === 'true';
+            if (savedHidePnl) {
+                document.getElementById('mainApp').classList.add('pnl-hidden');
+                hidePnlBtn.classList.add('active');
+                hidePnlBtn.textContent = '👁 Show P&L';
+            }
+            hidePnlBtn.addEventListener('click', () => {
+                const mainApp = document.getElementById('mainApp');
+                mainApp.classList.toggle('pnl-hidden');
+                const isHidden = mainApp.classList.contains('pnl-hidden');
+                hidePnlBtn.classList.toggle('active', isHidden);
+                hidePnlBtn.textContent = isHidden ? '👁 Show P&L' : '👁 Hide P&L';
+                localStorage.setItem('hidePnl', isHidden);
+            });
+            
+            // Intention prompt dismiss
+            document.getElementById('dismissIntention').addEventListener('click', () => {
+                document.getElementById('intentionPrompt').classList.add('hidden');
+                sessionStorage.setItem('intentionDismissed', 'true');
+            });
+            
+            // Check if already dismissed this session
+            if (sessionStorage.getItem('intentionDismissed') === 'true') {
+                document.getElementById('intentionPrompt').classList.add('hidden');
+            }
             
             // History delete
             document.getElementById('historyList').addEventListener('click', async (e) => {
@@ -1733,6 +2214,8 @@
                 document.getElementById('avgTradesContext').textContent = '';
                 document.getElementById('avgDrawdown').textContent = '$0';
                 document.getElementById('avgDrawdownContext').textContent = '';
+                document.getElementById('streakCount').textContent = '0';
+                document.getElementById('streakDisplay').classList.add('no-streak');
                 return;
             }
             
@@ -1790,6 +2273,40 @@
                     </div>
                 `;
             }).join('');
+            
+            // Update streak display
+            renderStreak();
+        }
+        
+        function renderStreak() {
+            const total = config.questions.length;
+            if (entries.length === 0 || total === 0) {
+                document.getElementById('streakCount').textContent = '0';
+                document.getElementById('streakDisplay').classList.add('no-streak');
+                return;
+            }
+            
+            // Sort entries by date descending
+            const sortedEntries = [...entries].sort((a, b) => b.date.localeCompare(a.date));
+            
+            // Count consecutive perfect days from most recent
+            let streak = 0;
+            for (const entry of sortedEntries) {
+                const entryTotal = entry.totalQuestions || total;
+                if (entry.score === entryTotal) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            document.getElementById('streakCount').textContent = streak;
+            const streakDisplay = document.getElementById('streakDisplay');
+            if (streak > 0) {
+                streakDisplay.classList.remove('no-streak');
+            } else {
+                streakDisplay.classList.add('no-streak');
+            }
         }
         
         function renderCalendar() {
@@ -1837,18 +2354,36 @@
                 const entry = entries.find(e => e.date === dateStr);
                 
                 const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day' + (entry ? ' has-entry' : '');
+                let dayClass = 'calendar-day';
+                if (entry) {
+                    dayClass += ' has-entry';
+                    // Discipline-based coloring
+                    const pct = (entry.score / (entry.totalQuestions || total)) * 100;
+                    if (pct === 100) dayClass += ' discipline-perfect';
+                    else if (pct >= 80) dayClass += ' discipline-good';
+                    else if (pct >= 50) dayClass += ' discipline-ok';
+                    else dayClass += ' discipline-bad';
+                }
+                dayEl.className = dayClass;
                 dayEl.innerHTML = `<div class="calendar-day-number">${day}</div>`;
                 
                 if (entry) {
                     const pnl = entry.pnl || 0;
                     weekPnl += pnl;
+                    const entryTotal = entry.totalQuestions || total;
+                    const pct = Math.round((entry.score / entryTotal) * 100);
                     const trades = entry.trades != null ? entry.trades + 't' : '';
                     const dd = entry.drawdown != null ? '-$' + entry.drawdown.toFixed(0) : '';
                     
+                    // Discipline class for score text
+                    let discClass = 'bad';
+                    if (pct === 100) discClass = 'perfect';
+                    else if (pct >= 80) discClass = 'good';
+                    else if (pct >= 50) discClass = 'ok';
+                    
                     dayEl.innerHTML += `
+                        <div class="calendar-day-discipline ${discClass}">${pct}%</div>
                         <div class="calendar-day-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</div>
-                        <div class="calendar-day-score">${entry.score}/${entry.totalQuestions || total}</div>
                         ${trades ? `<div class="calendar-day-extra">${trades}</div>` : ''}
                         ${dd ? `<div class="calendar-day-extra"><span class="dd">${dd}</span></div>` : ''}
                     `;
@@ -1906,7 +2441,7 @@
                     filter: `date >= '${startOfMonth}'`
                 });
                 
-                // Group by user
+                // Group by user and calculate stats
                 const userStats = users.map(user => {
                     const userEntries = allEntries.filter(e => e.user === user.id);
                     const totalPnl = userEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
@@ -1924,26 +2459,35 @@
                         ? userEntries[0].total_questions || 4 
                         : 4;
                     
-                    // Average raw score for context display
-                    const avgRawScore = userEntries.length > 0
-                        ? userEntries.reduce((sum, e) => sum + (e.score || 0), 0) / userEntries.length
-                        : 0;
-                    
                     // Perfect days count and percentage
                     const perfectDays = userEntries.filter(e => e.score === (e.total_questions || 4)).length;
                     const perfectPct = userEntries.length > 0 
                         ? (perfectDays / userEntries.length * 100)
                         : 0;
                     
+                    // Calculate current streak
+                    const sortedEntries = [...userEntries].sort((a, b) => b.date.localeCompare(a.date));
+                    let currentStreak = 0;
+                    for (const entry of sortedEntries) {
+                        const entryTotal = entry.total_questions || 4;
+                        if (entry.score === entryTotal) {
+                            currentStreak++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
                     // Average trades
                     const entriesWithTrades = userEntries.filter(e => e.trades != null);
-                    const totalTrades = entriesWithTrades.reduce((sum, e) => sum + (e.trades || 0), 0);
-                    const avgTrades = entriesWithTrades.length > 0 ? totalTrades / entriesWithTrades.length : null;
+                    const avgTrades = entriesWithTrades.length > 0 
+                        ? entriesWithTrades.reduce((sum, e) => sum + (e.trades || 0), 0) / entriesWithTrades.length 
+                        : null;
                     
                     // Average drawdown
                     const entriesWithDrawdown = userEntries.filter(e => e.drawdown != null);
-                    const totalDrawdown = entriesWithDrawdown.reduce((sum, e) => sum + (e.drawdown || 0), 0);
-                    const avgDrawdown = entriesWithDrawdown.length > 0 ? totalDrawdown / entriesWithDrawdown.length : null;
+                    const avgDrawdown = entriesWithDrawdown.length > 0 
+                        ? entriesWithDrawdown.reduce((sum, e) => sum + (e.drawdown || 0), 0) / entriesWithDrawdown.length 
+                        : null;
                     
                     return {
                         id: user.id,
@@ -1952,29 +2496,47 @@
                         days: userEntries.length,
                         pnl: totalPnl,
                         avgPct: avgPct,
-                        avgRawScore: avgRawScore,
                         typicalQuestions: typicalQuestions,
                         perfectDays: perfectDays,
                         perfectPct: perfectPct,
+                        currentStreak: currentStreak,
                         avgTrades: avgTrades,
-                        totalTrades: totalTrades,
                         avgDrawdown: avgDrawdown
                     };
                 }).filter(u => u.days > 0);
                 
-                // Sort by P&L
-                userStats.sort((a, b) => b.pnl - a.pnl);
+                // Sort by discipline (avgPct), not P&L
+                userStats.sort((a, b) => b.avgPct - a.avgPct);
                 
-                // Team totals - average of everyone's percentages
+                // Calculate team totals
                 const teamPnl = userStats.reduce((sum, u) => sum + u.pnl, 0);
                 const teamAvgPct = userStats.length > 0 
                     ? (userStats.reduce((sum, u) => sum + u.avgPct, 0) / userStats.length)
                     : 0;
+                const teamPerfectDays = userStats.reduce((sum, u) => sum + u.perfectDays, 0);
                 
+                // Find leaders
+                const streakLeader = [...userStats].sort((a, b) => b.currentStreak - a.currentStreak)[0];
+                const perfectLeader = [...userStats].sort((a, b) => b.perfectDays - a.perfectDays)[0];
+                const disciplineLeader = [...userStats].sort((a, b) => b.avgPct - a.avgPct)[0];
+                
+                // Update leaderboard
+                document.getElementById('leaderStreak').textContent = streakLeader && streakLeader.currentStreak > 0
+                    ? `${streakLeader.name} (${streakLeader.currentStreak}d)`
+                    : 'No active streaks';
+                document.getElementById('leaderPerfect').textContent = perfectLeader && perfectLeader.perfectDays > 0
+                    ? `${perfectLeader.name} (${perfectLeader.perfectDays}d)`
+                    : '-';
+                document.getElementById('leaderDiscipline').textContent = disciplineLeader
+                    ? `${disciplineLeader.name} (${Math.round(disciplineLeader.avgPct)}%)`
+                    : '-';
+                
+                // Update team summary
                 document.getElementById('teamMembers').textContent = userStats.length;
-                document.getElementById('teamTotalPnl').textContent = formatPnl(teamPnl);
-                document.getElementById('teamTotalPnl').className = 'team-summary-value';
                 document.getElementById('teamAvgScore').textContent = Math.round(teamAvgPct) + '%';
+                document.getElementById('teamPerfectDays').textContent = teamPerfectDays;
+                document.getElementById('teamTotalPnl').textContent = formatPnl(teamPnl);
+                document.getElementById('teamTotalPnl').className = 'team-summary-value team-pnl';
                 
                 // Render cards
                 if (userStats.length === 0) {
@@ -1982,36 +2544,45 @@
                     return;
                 }
                 
-                grid.innerHTML = userStats.map(user => `
-                    <div class="team-member-card">
-                        <div class="team-member-header">
-                            <span class="team-member-name ${user.isCurrentUser ? 'you' : ''}">${user.name}${user.isCurrentUser ? ' (you)' : ''}</span>
-                            <span class="team-member-streak">${user.days} days tracked</span>
+                grid.innerHTML = userStats.map(user => {
+                    // Discipline color class
+                    let discClass = 'bad';
+                    if (user.avgPct >= 90) discClass = 'perfect';
+                    else if (user.avgPct >= 75) discClass = 'good';
+                    else if (user.avgPct >= 50) discClass = 'ok';
+                    
+                    return `
+                        <div class="team-member-card">
+                            <div class="team-member-header">
+                                <span class="team-member-name ${user.isCurrentUser ? 'you' : ''}">${user.name}${user.isCurrentUser ? ' (you)' : ''}</span>
+                                <span class="team-member-streak">${user.days} days tracked</span>
+                            </div>
+                            <div class="team-member-discipline">
+                                <div class="discipline-big ${discClass}">${Math.round(user.avgPct)}%</div>
+                                <div class="discipline-details">
+                                    <div class="discipline-streak ${user.currentStreak === 0 ? 'no-streak' : ''}">
+                                        ${user.currentStreak > 0 ? `🔥 ${user.currentStreak} day streak` : 'No active streak'}
+                                    </div>
+                                    <div class="discipline-perfect">${user.perfectDays} perfect days (${Math.round(user.perfectPct)}%)</div>
+                                </div>
+                            </div>
+                            <div class="team-member-stats">
+                                <div>
+                                    <div class="team-stat-value">${user.avgTrades != null ? user.avgTrades.toFixed(1) : '-'}</div>
+                                    <div class="team-stat-label">Avg Trades</div>
+                                </div>
+                                <div>
+                                    <div class="team-stat-value" style="color: #ef4444">${user.avgDrawdown != null ? '$' + user.avgDrawdown.toFixed(0) : '-'}</div>
+                                    <div class="team-stat-label">Avg DD</div>
+                                </div>
+                                <div class="team-pnl-stat">
+                                    <div class="team-stat-value ${getPnlClass(user.pnl)}">${formatPnlShort(user.pnl)}</div>
+                                    <div class="team-stat-label">P&L</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="team-member-stats">
-                            <div>
-                                <div class="team-stat-value ${getPnlClass(user.pnl)}">${formatPnlShort(user.pnl)}</div>
-                                <div class="team-stat-label">P&L</div>
-                            </div>
-                            <div>
-                                <div class="team-stat-value">${user.avgTrades != null ? user.avgTrades.toFixed(1) : '-'}</div>
-                                <div class="team-stat-label">Avg Trades</div>
-                            </div>
-                            <div>
-                                <div class="team-stat-value" style="color: #ef4444">${user.avgDrawdown != null ? '$' + user.avgDrawdown.toFixed(0) : '-'}</div>
-                                <div class="team-stat-label">Avg DD</div>
-                            </div>
-                            <div>
-                                <div class="team-stat-value">${Math.round(user.avgPct)}%</div>
-                                <div class="team-stat-label">(${user.avgRawScore.toFixed(1)}/${user.typicalQuestions})</div>
-                            </div>
-                            <div>
-                                <div class="team-stat-value">${Math.round(user.perfectPct)}%</div>
-                                <div class="team-stat-label">Perfect</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
                 
             } catch (err) {
                 console.error('Failed to load team data:', err);
@@ -2037,9 +2608,386 @@
                 pnl: e.pnl || 0,
                 trades: e.trades,
                 drawdown: e.drawdown
+            })).sort((a, b) => a.date.localeCompare(b.date));
+            
+            let html = '';
+            
+            // ============ 1. STREAK RECORDS ============
+            const { currentStreak, longestStreak, longestStreakDates } = calculateStreaks(entriesWithPct);
+            
+            html += `
+                <div class="metric-section">
+                    <div class="metric-title">🔥 Streak Records</div>
+                    <div class="metric-grid">
+                        <div class="metric-card">
+                            <div class="metric-card-label">Current Streak</div>
+                            <div class="metric-card-value" style="color: ${currentStreak > 0 ? '#f59e0b' : '#666'}">${currentStreak}</div>
+                            <div class="metric-card-context">perfect days</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">Longest Streak</div>
+                            <div class="metric-card-value" style="color: #22c55e">${longestStreak}</div>
+                            <div class="metric-card-context">${longestStreakDates || 'No streak yet'}</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">Total Perfect Days</div>
+                            <div class="metric-card-value">${entriesWithPct.filter(e => e.pct === 100).length}</div>
+                            <div class="metric-card-context">of ${entries.length} days</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">Perfect Rate</div>
+                            <div class="metric-card-value">${Math.round(entriesWithPct.filter(e => e.pct === 100).length / entries.length * 100)}%</div>
+                            <div class="metric-card-context">overall</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // ============ 2. DISCIPLINE TREND ============
+            const weeklyTrend = calculateWeeklyTrend(entriesWithPct);
+            if (weeklyTrend.length >= 2) {
+                const trendDirection = weeklyTrend[weeklyTrend.length - 1].avg - weeklyTrend[0].avg;
+                html += `
+                    <div class="metric-section">
+                        <div class="metric-title">📈 Discipline Trend</div>
+                        <div class="trend-chart">
+                            ${weeklyTrend.map((week, i) => `
+                                <div class="trend-bar-container">
+                                    <div class="trend-bar" style="height: ${week.avg}%; background: ${getTrendColor(week.avg)}"></div>
+                                    <div class="trend-label">${week.label}</div>
+                                    <div class="trend-value">${Math.round(week.avg)}%</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="metric-insight ${trendDirection >= 5 ? 'positive' : trendDirection <= -5 ? 'negative' : ''}">
+                            ${trendDirection >= 5 ? `📈 Your discipline is improving! Up ${Math.round(trendDirection)}% from your first week.` :
+                              trendDirection <= -5 ? `📉 Discipline is slipping. Down ${Math.round(Math.abs(trendDirection))}% from your first week. Refocus on the process.` :
+                              `➡️ Discipline holding steady. Keep building the habit.`}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // ============ 3. THIS MONTH VS LAST MONTH ============
+            const monthComparison = calculateMonthComparison(entriesWithPct);
+            if (monthComparison.lastMonth.days > 0) {
+                const improvement = monthComparison.thisMonth.avgDisc - monthComparison.lastMonth.avgDisc;
+                html += `
+                    <div class="metric-section">
+                        <div class="metric-title">📅 This Month vs Last Month</div>
+                        <div class="metric-grid">
+                            <div class="metric-card">
+                                <div class="metric-card-label">Last Month</div>
+                                <div class="metric-card-value">${Math.round(monthComparison.lastMonth.avgDisc)}%</div>
+                                <div class="metric-card-context">${monthComparison.lastMonth.days} days tracked</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-label">This Month</div>
+                                <div class="metric-card-value" style="color: ${monthComparison.thisMonth.avgDisc >= monthComparison.lastMonth.avgDisc ? '#22c55e' : '#ef4444'}">${Math.round(monthComparison.thisMonth.avgDisc)}%</div>
+                                <div class="metric-card-context">${monthComparison.thisMonth.days} days tracked</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-label">Perfect Days (Last)</div>
+                                <div class="metric-card-value">${monthComparison.lastMonth.perfectPct}%</div>
+                                <div class="metric-card-context">${monthComparison.lastMonth.perfectDays} days</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-label">Perfect Days (This)</div>
+                                <div class="metric-card-value" style="color: ${monthComparison.thisMonth.perfectPct >= monthComparison.lastMonth.perfectPct ? '#22c55e' : '#ef4444'}">${monthComparison.thisMonth.perfectPct}%</div>
+                                <div class="metric-card-context">${monthComparison.thisMonth.perfectDays} days</div>
+                            </div>
+                        </div>
+                        ${improvement !== 0 ? `
+                        <div class="metric-insight ${improvement > 0 ? 'positive' : 'negative'}">
+                            ${improvement > 0 ? `🎯 Discipline up ${Math.round(improvement)}% this month. You're improving!` : 
+                              `⚠️ Discipline down ${Math.round(Math.abs(improvement))}% this month. What changed?`}
+                        </div>` : ''}
+                    </div>
+                `;
+            }
+            
+            // ============ 4. RULE BREAKDOWN ============
+            const ruleBreakdown = calculateRuleBreakdown(entries, config.questions);
+            if (ruleBreakdown.length > 0) {
+                html += `
+                    <div class="metric-section">
+                        <div class="metric-title">🎯 Rule Breakdown</div>
+                        <p style="color: #888; font-size: 0.9em; margin-bottom: 15px;">Which rules are hardest to follow?</p>
+                        <div class="rule-breakdown">
+                            ${ruleBreakdown.map((rule, i) => `
+                                <div class="rule-row">
+                                    <div class="rule-rank">${i + 1}</div>
+                                    <div class="rule-text">${rule.text}</div>
+                                    <div class="rule-stats">
+                                        <span class="rule-fail-rate" style="color: ${rule.failRate > 30 ? '#ef4444' : rule.failRate > 15 ? '#f59e0b' : '#22c55e'}">${rule.failRate}% fail</span>
+                                        <span class="rule-context">(${rule.failures}/${rule.total})</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${ruleBreakdown[0].failRate > 25 ? `
+                        <div class="metric-insight warning">
+                            💡 Focus on "${ruleBreakdown[0].text.substring(0, 40)}..." — it's your biggest challenge at ${ruleBreakdown[0].failRate}% fail rate.
+                        </div>` : ''}
+                    </div>
+                `;
+            }
+            
+            // ============ 5. MILESTONE BADGES ============
+            const badges = calculateBadges(entriesWithPct, longestStreak);
+            html += `
+                <div class="metric-section">
+                    <div class="metric-title">🏆 Milestones</div>
+                    <div class="badges-grid">
+                        ${badges.map(badge => `
+                            <div class="badge ${badge.earned ? 'earned' : 'locked'}">
+                                <div class="badge-icon">${badge.icon}</div>
+                                <div class="badge-name">${badge.name}</div>
+                                <div class="badge-desc">${badge.earned ? badge.desc : badge.requirement}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // ============ 6. P&L CORRELATION (ADVANCED - COLLAPSED) ============
+            html += `
+                <div class="metric-section">
+                    <div class="metric-title advanced-toggle" onclick="toggleAdvancedMetrics()">
+                        📊 Advanced: P&L Correlation <span id="advancedArrow">▼</span>
+                    </div>
+                    <div id="advancedMetrics" class="advanced-content hidden">
+                        <p style="color: #666; font-size: 0.85em; margin-bottom: 15px;">Does discipline actually affect your P&L? (Requires more data for reliability)</p>
+                        ${renderPnlCorrelation(entriesWithPct, total)}
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        function calculateStreaks(sortedEntries) {
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let tempStreak = 0;
+            let streakStart = null;
+            let longestStart = null;
+            let longestEnd = null;
+            
+            // Calculate from newest to oldest for current streak
+            const reversed = [...sortedEntries].reverse();
+            for (const entry of reversed) {
+                if (entry.pct === 100) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+            
+            // Calculate longest streak from oldest to newest
+            for (let i = 0; i < sortedEntries.length; i++) {
+                if (sortedEntries[i].pct === 100) {
+                    if (tempStreak === 0) streakStart = sortedEntries[i].date;
+                    tempStreak++;
+                    if (tempStreak > longestStreak) {
+                        longestStreak = tempStreak;
+                        longestStart = streakStart;
+                        longestEnd = sortedEntries[i].date;
+                    }
+                } else {
+                    tempStreak = 0;
+                }
+            }
+            
+            let longestStreakDates = '';
+            if (longestStart && longestEnd) {
+                const formatDate = (d) => {
+                    const date = new Date(d + 'T12:00:00');
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                };
+                longestStreakDates = longestStart === longestEnd ? formatDate(longestStart) : `${formatDate(longestStart)} - ${formatDate(longestEnd)}`;
+            }
+            
+            return { currentStreak, longestStreak, longestStreakDates };
+        }
+        
+        function calculateWeeklyTrend(sortedEntries) {
+            const weeks = [];
+            let currentWeek = [];
+            let weekStart = null;
+            
+            for (const entry of sortedEntries) {
+                const entryDate = new Date(entry.date + 'T12:00:00');
+                if (!weekStart) {
+                    weekStart = new Date(entryDate);
+                    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week (Sunday)
+                }
+                
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 7);
+                
+                if (entryDate < weekEnd) {
+                    currentWeek.push(entry);
+                } else {
+                    if (currentWeek.length > 0) {
+                        weeks.push({
+                            label: `${weekStart.getMonth() + 1}/${weekStart.getDate()}`,
+                            avg: currentWeek.reduce((s, e) => s + e.pct, 0) / currentWeek.length,
+                            days: currentWeek.length
+                        });
+                    }
+                    weekStart = new Date(entryDate);
+                    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                    currentWeek = [entry];
+                }
+            }
+            
+            // Add final week
+            if (currentWeek.length > 0) {
+                weeks.push({
+                    label: `${weekStart.getMonth() + 1}/${weekStart.getDate()}`,
+                    avg: currentWeek.reduce((s, e) => s + e.pct, 0) / currentWeek.length,
+                    days: currentWeek.length
+                });
+            }
+            
+            return weeks.slice(-6); // Last 6 weeks max
+        }
+        
+        function getTrendColor(pct) {
+            if (pct >= 90) return '#22c55e';
+            if (pct >= 75) return '#84cc16';
+            if (pct >= 50) return '#f59e0b';
+            return '#ef4444';
+        }
+        
+        function calculateMonthComparison(sortedEntries) {
+            const now = new Date();
+            const thisMonth = now.getMonth();
+            const thisYear = now.getFullYear();
+            const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+            const lastYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+            
+            const thisMonthEntries = sortedEntries.filter(e => {
+                const d = new Date(e.date + 'T12:00:00');
+                return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+            });
+            
+            const lastMonthEntries = sortedEntries.filter(e => {
+                const d = new Date(e.date + 'T12:00:00');
+                return d.getMonth() === lastMonth && d.getFullYear() === lastYear;
+            });
+            
+            const calcStats = (arr) => ({
+                days: arr.length,
+                avgDisc: arr.length > 0 ? arr.reduce((s, e) => s + e.pct, 0) / arr.length : 0,
+                perfectDays: arr.filter(e => e.pct === 100).length,
+                perfectPct: arr.length > 0 ? Math.round(arr.filter(e => e.pct === 100).length / arr.length * 100) : 0
+            });
+            
+            return {
+                thisMonth: calcStats(thisMonthEntries),
+                lastMonth: calcStats(lastMonthEntries)
+            };
+        }
+        
+        function calculateRuleBreakdown(entries, questions) {
+            if (!questions || questions.length === 0) return [];
+            
+            const ruleStats = questions.map((q, i) => ({
+                text: q,
+                index: i,
+                failures: 0,
+                total: 0
             }));
             
-            // Group by discipline range
+            for (const entry of entries) {
+                if (!entry.answers) continue;
+                const answers = typeof entry.answers === 'string' ? JSON.parse(entry.answers) : entry.answers;
+                
+                questions.forEach((q, i) => {
+                    if (answers[q] !== undefined) {
+                        ruleStats[i].total++;
+                        if (!answers[q]) ruleStats[i].failures++;
+                    }
+                });
+            }
+            
+            return ruleStats
+                .filter(r => r.total >= 3)
+                .map(r => ({
+                    ...r,
+                    failRate: Math.round(r.failures / r.total * 100)
+                }))
+                .sort((a, b) => b.failRate - a.failRate);
+        }
+        
+        function calculateBadges(sortedEntries, longestStreak) {
+            const totalPerfect = sortedEntries.filter(e => e.pct === 100).length;
+            const totalDays = sortedEntries.length;
+            const avgDisc = totalDays > 0 ? sortedEntries.reduce((s, e) => s + e.pct, 0) / totalDays : 0;
+            
+            return [
+                {
+                    icon: '🌱',
+                    name: 'First Steps',
+                    desc: 'Tracked 3 days',
+                    requirement: 'Track 3 days',
+                    earned: totalDays >= 3
+                },
+                {
+                    icon: '⭐',
+                    name: 'First Perfect',
+                    desc: 'First 100% day',
+                    requirement: 'Get a perfect day',
+                    earned: totalPerfect >= 1
+                },
+                {
+                    icon: '🔥',
+                    name: 'On Fire',
+                    desc: '3-day streak',
+                    requirement: '3-day perfect streak',
+                    earned: longestStreak >= 3
+                },
+                {
+                    icon: '💪',
+                    name: 'Disciplined',
+                    desc: '5-day streak',
+                    requirement: '5-day perfect streak',
+                    earned: longestStreak >= 5
+                },
+                {
+                    icon: '🏆',
+                    name: 'Champion',
+                    desc: '10-day streak',
+                    requirement: '10-day perfect streak',
+                    earned: longestStreak >= 10
+                },
+                {
+                    icon: '📊',
+                    name: 'Committed',
+                    desc: '20 days tracked',
+                    requirement: 'Track 20 days',
+                    earned: totalDays >= 20
+                },
+                {
+                    icon: '🎯',
+                    name: 'Sharpshooter',
+                    desc: '10 perfect days',
+                    requirement: '10 total perfect days',
+                    earned: totalPerfect >= 10
+                },
+                {
+                    icon: '👑',
+                    name: 'Master',
+                    desc: '80%+ avg discipline',
+                    requirement: 'Maintain 80%+ average',
+                    earned: avgDisc >= 80 && totalDays >= 10
+                }
+            ];
+        }
+        
+        function renderPnlCorrelation(entriesWithPct, total) {
             const lowDiscipline = entriesWithPct.filter(e => e.pct < 50);
             const midDiscipline = entriesWithPct.filter(e => e.pct >= 50 && e.pct < 80);
             const highDiscipline = entriesWithPct.filter(e => e.pct >= 80);
@@ -2049,157 +2997,24 @@
                 const withDD = arr.filter(e => e.drawdown != null);
                 return withDD.length > 0 ? withDD.reduce((s, e) => s + e.drawdown, 0) / withDD.length : null;
             };
-            const avgTrades = (arr) => {
-                const withTrades = arr.filter(e => e.trades != null);
-                return withTrades.length > 0 ? withTrades.reduce((s, e) => s + e.trades, 0) / withTrades.length : null;
-            };
             
-            // Perfect vs imperfect days
-            const perfectDays = entriesWithPct.filter(e => e.pct === 100);
-            const imperfectDays = entriesWithPct.filter(e => e.pct < 100);
-            
-            // Calculate max values for bar scaling
             const allPnls = [avgPnl(lowDiscipline), avgPnl(midDiscipline), avgPnl(highDiscipline)];
             const maxAbsPnl = Math.max(...allPnls.map(Math.abs), 1);
             
-            // Insights
-            const insights = [];
-            
-            const highAvgPnl = avgPnl(highDiscipline);
-            const lowAvgPnl = avgPnl(lowDiscipline);
-            if (highDiscipline.length >= 2 && lowDiscipline.length >= 2) {
-                if (highAvgPnl > lowAvgPnl + 50) {
-                    insights.push({ type: 'positive', text: `High discipline days average $${highAvgPnl.toFixed(0)} more than low discipline days. Discipline is paying off!` });
-                } else if (lowAvgPnl > highAvgPnl + 50) {
-                    insights.push({ type: 'warning', text: `Interestingly, low discipline days are more profitable. This pattern rarely sustains—consider if you're taking uncalculated risks.` });
-                }
-            }
-            
-            const highAvgDD = avgDD(highDiscipline);
-            const lowAvgDD = avgDD(lowDiscipline);
-            if (highAvgDD !== null && lowAvgDD !== null && lowDiscipline.length >= 2) {
-                if (lowAvgDD > highAvgDD * 1.5) {
-                    insights.push({ type: 'negative', text: `Low discipline days have ${((lowAvgDD / highAvgDD - 1) * 100).toFixed(0)}% higher drawdowns. Breaking rules is costing you.` });
-                }
-            }
-            
-            const perfectAvgPnl = avgPnl(perfectDays);
-            const imperfectAvgPnl = avgPnl(imperfectDays);
-            if (perfectDays.length >= 2) {
-                if (perfectAvgPnl > imperfectAvgPnl) {
-                    insights.push({ type: 'positive', text: `Perfect discipline days average $${(perfectAvgPnl - imperfectAvgPnl).toFixed(0)} better. Keep following the rules!` });
-                }
-            }
-            
-            // Build HTML
-            let html = '';
-            
-            // P&L by Discipline
-            html += `
-                <div class="metric-section">
-                    <div class="metric-title">💰 P&L by Discipline Level</div>
-                    <div class="metric-bar-container">
-                        ${renderPnlBar('0-49%', avgPnl(lowDiscipline), lowDiscipline.length, maxAbsPnl)}
-                        ${renderPnlBar('50-79%', avgPnl(midDiscipline), midDiscipline.length, maxAbsPnl)}
-                        ${renderPnlBar('80-100%', avgPnl(highDiscipline), highDiscipline.length, maxAbsPnl)}
-                    </div>
+            return `
+                <div class="metric-bar-container">
+                    ${renderPnlBar('0-49%', avgPnl(lowDiscipline), lowDiscipline.length, maxAbsPnl)}
+                    ${renderPnlBar('50-79%', avgPnl(midDiscipline), midDiscipline.length, maxAbsPnl)}
+                    ${renderPnlBar('80-100%', avgPnl(highDiscipline), highDiscipline.length, maxAbsPnl)}
                 </div>
             `;
-            
-            // Drawdown by Discipline
-            const ddLow = avgDD(lowDiscipline);
-            const ddMid = avgDD(midDiscipline);
-            const ddHigh = avgDD(highDiscipline);
-            const maxDD = Math.max(ddLow || 0, ddMid || 0, ddHigh || 0, 1);
-            
-            html += `
-                <div class="metric-section">
-                    <div class="metric-title">📉 Avg Drawdown by Discipline Level</div>
-                    <div class="metric-bar-container">
-                        ${renderDDBar('0-49%', ddLow, lowDiscipline.filter(e => e.drawdown != null).length, maxDD)}
-                        ${renderDDBar('50-79%', ddMid, midDiscipline.filter(e => e.drawdown != null).length, maxDD)}
-                        ${renderDDBar('80-100%', ddHigh, highDiscipline.filter(e => e.drawdown != null).length, maxDD)}
-                    </div>
-                </div>
-            `;
-            
-            // Perfect vs Imperfect comparison
-            html += `
-                <div class="metric-section">
-                    <div class="metric-title">✨ Perfect Days vs Imperfect Days</div>
-                    <div class="metric-grid">
-                        <div class="metric-card">
-                            <div class="metric-card-label">Perfect Days</div>
-                            <div class="metric-card-value">${perfectDays.length}</div>
-                            <div class="metric-card-context">${((perfectDays.length / entries.length) * 100).toFixed(0)}% of days</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">Avg P&L (Perfect)</div>
-                            <div class="metric-card-value ${perfectAvgPnl >= 0 ? 'positive' : 'negative'}">${formatPnlShort(perfectAvgPnl)}</div>
-                            <div class="metric-card-context">${perfectDays.length} days</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">Avg P&L (Imperfect)</div>
-                            <div class="metric-card-value ${imperfectAvgPnl >= 0 ? 'positive' : 'negative'}">${formatPnlShort(imperfectAvgPnl)}</div>
-                            <div class="metric-card-context">${imperfectDays.length} days</div>
-                        </div>
-                        <div class="metric-card">
-                            <div class="metric-card-label">Difference</div>
-                            <div class="metric-card-value ${perfectAvgPnl - imperfectAvgPnl >= 0 ? 'positive' : 'negative'}">${formatPnlShort(perfectAvgPnl - imperfectAvgPnl)}</div>
-                            <div class="metric-card-context">per day</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // Trade count analysis
-            const entriesWithTradesData = entriesWithPct.filter(e => e.trades != null);
-            if (entriesWithTradesData.length >= 3) {
-                const sortedByTrades = [...entriesWithTradesData].sort((a, b) => a.trades - b.trades);
-                const lowTradesDays = sortedByTrades.slice(0, Math.ceil(sortedByTrades.length / 3));
-                const highTradesDays = sortedByTrades.slice(-Math.ceil(sortedByTrades.length / 3));
-                
-                const avgTradesLow = avgTrades(lowTradesDays);
-                const avgTradesHigh = avgTrades(highTradesDays);
-                
-                html += `
-                    <div class="metric-section">
-                        <div class="metric-title">🔢 Trade Count Impact</div>
-                        <div class="metric-grid">
-                            <div class="metric-card">
-                                <div class="metric-card-label">Fewer Trades Days</div>
-                                <div class="metric-card-value ${avgPnl(lowTradesDays) >= 0 ? 'positive' : 'negative'}">${formatPnlShort(avgPnl(lowTradesDays))}</div>
-                                <div class="metric-card-context">avg ${avgTradesLow?.toFixed(1) || '-'} trades</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-card-label">More Trades Days</div>
-                                <div class="metric-card-value ${avgPnl(highTradesDays) >= 0 ? 'positive' : 'negative'}">${formatPnlShort(avgPnl(highTradesDays))}</div>
-                                <div class="metric-card-context">avg ${avgTradesHigh?.toFixed(1) || '-'} trades</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-card-label">Avg DD (Fewer)</div>
-                                <div class="metric-card-value" style="color: #ef4444">${avgDD(lowTradesDays) != null ? '$' + avgDD(lowTradesDays).toFixed(0) : '-'}</div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-card-label">Avg DD (More)</div>
-                                <div class="metric-card-value" style="color: #ef4444">${avgDD(highTradesDays) != null ? '$' + avgDD(highTradesDays).toFixed(0) : '-'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Insights
-            if (insights.length > 0) {
-                html += `
-                    <div class="metric-section">
-                        <div class="metric-title">💡 Insights</div>
-                        ${insights.map(i => `<div class="metric-insight ${i.type}">${i.text}</div>`).join('')}
-                    </div>
-                `;
-            }
-            
-            container.innerHTML = html;
+        }
+        
+        function toggleAdvancedMetrics() {
+            const content = document.getElementById('advancedMetrics');
+            const arrow = document.getElementById('advancedArrow');
+            content.classList.toggle('hidden');
+            arrow.textContent = content.classList.contains('hidden') ? '▼' : '▲';
         }
         
         function renderPnlBar(label, value, count, maxVal) {
@@ -2221,29 +3036,6 @@
                     <div class="metric-bar-wrapper">
                         <div class="metric-bar ${barClass}" style="width: ${width + 20}%"></div>
                         <div class="metric-bar-value">${formatPnlShort(value)} (${count}d)</div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        function renderDDBar(label, value, count, maxVal) {
-            if (value === null || count === 0) {
-                return `
-                    <div class="metric-bar-row">
-                        <div class="metric-bar-label">${label}</div>
-                        <div class="metric-bar-wrapper">
-                            <div class="metric-bar-value" style="color: #666">No data</div>
-                        </div>
-                    </div>
-                `;
-            }
-            const width = Math.min(value / maxVal * 80, 80);
-            return `
-                <div class="metric-bar-row">
-                    <div class="metric-bar-label">${label}</div>
-                    <div class="metric-bar-wrapper">
-                        <div class="metric-bar negative" style="width: ${width + 20}%"></div>
-                        <div class="metric-bar-value">$${value.toFixed(0)} (${count}d)</div>
                     </div>
                 </div>
             `;
