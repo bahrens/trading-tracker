@@ -22,7 +22,7 @@
         }
         
         .container {
-            max-width: 600px;
+            max-width: 750px;
             margin: 0 auto;
         }
         
@@ -277,7 +277,7 @@
             font-size: 1em;
         }
         
-        .date-picker, .pnl-input, .trades-input {
+        .date-picker, .pnl-input, .trades-input, .drawdown-input {
             background: #1a1a2e;
             border: 1px solid #444;
             border-radius: 6px;
@@ -295,7 +295,11 @@
             width: 70px;
         }
         
-        .date-picker:focus, .pnl-input:focus, .trades-input:focus {
+        .drawdown-input {
+            width: 80px;
+        }
+        
+        .date-picker:focus, .pnl-input:focus, .trades-input:focus, .drawdown-input:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -496,11 +500,11 @@
             background: #1a1a2e;
             border-radius: 6px;
             padding: 8px 4px;
-            min-height: 60px;
+            min-height: 95px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.8em;
+            font-size: 0.85em;
         }
         
         .calendar-day.empty { background: transparent; }
@@ -515,7 +519,7 @@
         
         .calendar-day-pnl {
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 0.95em;
         }
         
         .calendar-day-pnl.positive { color: #22c55e; }
@@ -523,16 +527,26 @@
         .calendar-day-pnl.zero { color: #666; }
         
         .calendar-day-score {
-            font-size: 0.7em;
+            font-size: 0.75em;
             color: #888;
-            margin-top: 2px;
+            margin-top: 1px;
+        }
+        
+        .calendar-day-extra {
+            font-size: 0.7em;
+            color: #666;
+            margin-top: 1px;
+        }
+        
+        .calendar-day-extra .dd {
+            color: #ef4444;
         }
         
         .weekly-total {
             background: #333355;
             border-radius: 6px;
             padding: 8px 4px;
-            min-height: 60px;
+            min-height: 95px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -603,8 +617,8 @@
         
         .history-list-header {
             display: grid;
-            grid-template-columns: 1fr 1fr 0.7fr 1fr 30px;
-            gap: 15px;
+            grid-template-columns: 1fr 0.8fr 0.6fr 0.8fr 1fr 30px;
+            gap: 10px;
             padding: 10px 0;
             border-bottom: 1px solid #444;
             color: #666;
@@ -622,13 +636,17 @@
         }
         
         .history-list-header span:nth-child(4) {
+            text-align: center;
+        }
+        
+        .history-list-header span:nth-child(5) {
             text-align: right;
         }
         
         .history-item {
             display: grid;
-            grid-template-columns: 1fr 1fr 0.7fr 1fr 30px;
-            gap: 15px;
+            grid-template-columns: 1fr 0.8fr 0.6fr 0.8fr 1fr 30px;
+            gap: 10px;
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid #333;
@@ -656,6 +674,12 @@
             font-size: 0.9em;
             text-align: center;
             color: #888;
+        }
+        
+        .history-drawdown {
+            font-size: 0.9em;
+            text-align: center;
+            color: #ef4444;
         }
         
         .history-score {
@@ -721,7 +745,7 @@
         
         .team-member-stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 15px;
             text-align: center;
         }
@@ -891,6 +915,126 @@
             color: #fff;
         }
         
+        /* Metrics */
+        .metric-section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .metric-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .metric-title {
+            font-size: 1.1em;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .metric-card {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .metric-card-label {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        
+        .metric-card-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .metric-card-value.positive { color: #22c55e; }
+        .metric-card-value.negative { color: #ef4444; }
+        
+        .metric-card-context {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .metric-bar-container {
+            margin: 10px 0;
+        }
+        
+        .metric-bar-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .metric-bar-label {
+            width: 80px;
+            font-size: 0.85em;
+            color: #888;
+        }
+        
+        .metric-bar-wrapper {
+            flex: 1;
+            height: 24px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .metric-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .metric-bar.positive { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .metric-bar.negative { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .metric-bar.neutral { background: linear-gradient(90deg, #667eea, #764ba2); }
+        
+        .metric-bar-value {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .metric-insight {
+            background: #1a1a2e;
+            border-left: 3px solid #667eea;
+            padding: 12px 15px;
+            margin-top: 15px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+        
+        .metric-insight.positive {
+            border-left-color: #22c55e;
+        }
+        
+        .metric-insight.negative {
+            border-left-color: #ef4444;
+        }
+        
+        .metric-insight.warning {
+            border-left-color: #f59e0b;
+        }
+        
         .hidden { display: none !important; }
     </style>
 </head>
@@ -971,6 +1115,7 @@
         <div class="tab-nav">
             <button class="tab-btn active" data-tab="myTracker">📊 My Tracker</button>
             <button class="tab-btn" data-tab="team">👥 Team</button>
+            <button class="tab-btn" data-tab="metrics">📈 Metrics</button>
         </div>
         
         <!-- My Tracker Tab -->
@@ -985,6 +1130,8 @@
                     <input type="number" id="pnlInput" class="pnl-input" placeholder="$0" step="0.01">
                     <label style="margin-left: 10px;">Trades:</label>
                     <input type="number" id="tradesInput" class="trades-input" placeholder="0" min="0" step="1">
+                    <label style="margin-left: 10px;">Max DD:</label>
+                    <input type="number" id="drawdownInput" class="drawdown-input" placeholder="$0" min="0" step="0.01">
                 </div>
                 
                 <div id="questionsContainer"></div>
@@ -1042,11 +1189,17 @@
                         <div class="stat-label">Avg Trades</div>
                         <div class="stat-context" id="avgTradesContext"></div>
                     </div>
+                    <div class="stat">
+                        <div class="stat-value" id="avgDrawdown">$0</div>
+                        <div class="stat-label">Avg DD</div>
+                        <div class="stat-context" id="avgDrawdownContext"></div>
+                    </div>
                 </div>
                 <div class="history-list-header">
                     <span>Date</span>
                     <span>P&L</span>
                     <span>Trades</span>
+                    <span>Max DD</span>
                     <span>Discipline</span>
                     <span></span>
                 </div>
@@ -1076,6 +1229,18 @@
             
             <div class="team-grid" id="teamGrid">
                 <div class="empty-state">Loading team data...</div>
+            </div>
+        </div>
+        
+        <!-- Metrics Tab -->
+        <div class="tab-content" id="metricsTab">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">📈 Performance Metrics</h2>
+                <p style="color: #888; margin-bottom: 25px;">Analyzing correlations between discipline and trading outcomes</p>
+                
+                <div id="metricsContent">
+                    <div class="empty-state">Loading metrics...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -1282,6 +1447,8 @@
                     
                     if (btn.dataset.tab === 'team') {
                         loadTeamData();
+                    } else if (btn.dataset.tab === 'metrics') {
+                        renderMetrics();
                     }
                 });
             });
@@ -1401,6 +1568,7 @@
                     totalQuestions: r.total_questions || config.questions.length,
                     pnl: r.pnl,
                     trades: r.trades,
+                    drawdown: r.drawdown,
                     notes: r.notes || ''
                 }));
             } catch (err) {
@@ -1471,10 +1639,12 @@
                 document.getElementById('notes').value = entry.notes || '';
                 document.getElementById('pnlInput').value = entry.pnl ?? '';
                 document.getElementById('tradesInput').value = entry.trades ?? '';
+                document.getElementById('drawdownInput').value = entry.drawdown ?? '';
             } else {
                 document.getElementById('notes').value = '';
                 document.getElementById('pnlInput').value = '';
                 document.getElementById('tradesInput').value = '';
+                document.getElementById('drawdownInput').value = '';
             }
             
             renderQuestions();
@@ -1490,6 +1660,7 @@
             const date = document.getElementById('entryDate').value;
             const pnlVal = document.getElementById('pnlInput').value;
             const tradesVal = document.getElementById('tradesInput').value;
+            const drawdownVal = document.getElementById('drawdownInput').value;
             const yesCount = Object.values(answers).filter(a => a === 'yes').length;
             
             const data = {
@@ -1500,6 +1671,7 @@
                 total_questions: total,
                 pnl: pnlVal !== '' ? parseFloat(pnlVal) : null,
                 trades: tradesVal !== '' ? parseInt(tradesVal) : null,
+                drawdown: drawdownVal !== '' ? parseFloat(drawdownVal) : null,
                 notes: document.getElementById('notes').value.trim()
             };
             
@@ -1559,6 +1731,8 @@
                 document.getElementById('avgContext').textContent = '';
                 document.getElementById('avgTrades').textContent = '0';
                 document.getElementById('avgTradesContext').textContent = '';
+                document.getElementById('avgDrawdown').textContent = '$0';
+                document.getElementById('avgDrawdownContext').textContent = '';
                 return;
             }
             
@@ -1580,6 +1754,12 @@
             const totalTrades = entriesWithTrades.reduce((sum, e) => sum + (e.trades || 0), 0);
             const avgTrades = entriesWithTrades.length > 0 ? totalTrades / entriesWithTrades.length : 0;
             
+            // Calculate average drawdown
+            const entriesWithDrawdown = entries.filter(e => e.drawdown != null);
+            const totalDrawdown = entriesWithDrawdown.reduce((sum, e) => sum + (e.drawdown || 0), 0);
+            const avgDrawdown = entriesWithDrawdown.length > 0 ? totalDrawdown / entriesWithDrawdown.length : 0;
+            const maxDrawdown = entriesWithDrawdown.length > 0 ? Math.max(...entriesWithDrawdown.map(e => e.drawdown || 0)) : 0;
+            
             document.getElementById('totalDays').textContent = totalDays;
             document.getElementById('perfectDays').textContent = perfectPct + '%';
             document.getElementById('perfectContext').textContent = `(${perfectDays} of ${totalDays} days)`;
@@ -1587,6 +1767,8 @@
             document.getElementById('avgContext').textContent = `(${avgRaw.toFixed(1)}/${total} avg)`;
             document.getElementById('avgTrades').textContent = avgTrades.toFixed(1);
             document.getElementById('avgTradesContext').textContent = `(${totalTrades} total)`;
+            document.getElementById('avgDrawdown').textContent = '$' + avgDrawdown.toFixed(0);
+            document.getElementById('avgDrawdownContext').textContent = `(max $${maxDrawdown.toFixed(0)})`;
             
             list.innerHTML = entries.map(entry => {
                 const d = new Date(entry.date + 'T12:00:00');
@@ -1594,6 +1776,7 @@
                 const entryTotal = entry.totalQuestions || total;
                 const pnl = entry.pnl || 0;
                 const trades = entry.trades != null ? entry.trades : '-';
+                const drawdown = entry.drawdown != null ? '-$' + entry.drawdown.toFixed(0) : '-';
                 const pct = Math.round((entry.score / entryTotal) * 100);
                 
                 return `
@@ -1601,6 +1784,7 @@
                         <span class="history-date">${displayDate}</span>
                         <span class="history-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</span>
                         <span class="history-trades">${trades}</span>
+                        <span class="history-drawdown">${drawdown}</span>
                         <span class="history-score ${getScoreClass(entry.score, entryTotal)}">${pct}% <small style="color:#666">(${entry.score}/${entryTotal})</small></span>
                         <button class="delete-btn" data-date="${entry.date}">×</button>
                     </div>
@@ -1659,9 +1843,14 @@
                 if (entry) {
                     const pnl = entry.pnl || 0;
                     weekPnl += pnl;
+                    const trades = entry.trades != null ? entry.trades + 't' : '';
+                    const dd = entry.drawdown != null ? '-$' + entry.drawdown.toFixed(0) : '';
+                    
                     dayEl.innerHTML += `
                         <div class="calendar-day-pnl ${getPnlClass(pnl)}">${formatPnlShort(pnl)}</div>
                         <div class="calendar-day-score">${entry.score}/${entry.totalQuestions || total}</div>
+                        ${trades ? `<div class="calendar-day-extra">${trades}</div>` : ''}
+                        ${dd ? `<div class="calendar-day-extra"><span class="dd">${dd}</span></div>` : ''}
                     `;
                     dayEl.addEventListener('click', () => {
                         document.getElementById('entryDate').value = dateStr;
@@ -1751,6 +1940,11 @@
                     const totalTrades = entriesWithTrades.reduce((sum, e) => sum + (e.trades || 0), 0);
                     const avgTrades = entriesWithTrades.length > 0 ? totalTrades / entriesWithTrades.length : null;
                     
+                    // Average drawdown
+                    const entriesWithDrawdown = userEntries.filter(e => e.drawdown != null);
+                    const totalDrawdown = entriesWithDrawdown.reduce((sum, e) => sum + (e.drawdown || 0), 0);
+                    const avgDrawdown = entriesWithDrawdown.length > 0 ? totalDrawdown / entriesWithDrawdown.length : null;
+                    
                     return {
                         id: user.id,
                         name: user.name || user.email,
@@ -1763,7 +1957,8 @@
                         perfectDays: perfectDays,
                         perfectPct: perfectPct,
                         avgTrades: avgTrades,
-                        totalTrades: totalTrades
+                        totalTrades: totalTrades,
+                        avgDrawdown: avgDrawdown
                     };
                 }).filter(u => u.days > 0);
                 
@@ -1803,12 +1998,16 @@
                                 <div class="team-stat-label">Avg Trades</div>
                             </div>
                             <div>
+                                <div class="team-stat-value" style="color: #ef4444">${user.avgDrawdown != null ? '$' + user.avgDrawdown.toFixed(0) : '-'}</div>
+                                <div class="team-stat-label">Avg DD</div>
+                            </div>
+                            <div>
                                 <div class="team-stat-value">${Math.round(user.avgPct)}%</div>
                                 <div class="team-stat-label">(${user.avgRawScore.toFixed(1)}/${user.typicalQuestions})</div>
                             </div>
                             <div>
                                 <div class="team-stat-value">${Math.round(user.perfectPct)}%</div>
-                                <div class="team-stat-label">Perfect (${user.perfectDays}/${user.days})</div>
+                                <div class="team-stat-label">Perfect</div>
                             </div>
                         </div>
                     </div>
@@ -1818,6 +2017,236 @@
                 console.error('Failed to load team data:', err);
                 grid.innerHTML = '<div class="empty-state">Failed to load team data.</div>';
             }
+        }
+        
+        // Metrics
+        function renderMetrics() {
+            const container = document.getElementById('metricsContent');
+            
+            if (entries.length < 3) {
+                container.innerHTML = '<div class="empty-state">Need at least 3 days of data to show metrics.</div>';
+                return;
+            }
+            
+            const total = config.questions.length;
+            
+            // Calculate discipline percentage for each entry
+            const entriesWithPct = entries.map(e => ({
+                ...e,
+                pct: (e.score / (e.totalQuestions || total)) * 100,
+                pnl: e.pnl || 0,
+                trades: e.trades,
+                drawdown: e.drawdown
+            }));
+            
+            // Group by discipline range
+            const lowDiscipline = entriesWithPct.filter(e => e.pct < 50);
+            const midDiscipline = entriesWithPct.filter(e => e.pct >= 50 && e.pct < 80);
+            const highDiscipline = entriesWithPct.filter(e => e.pct >= 80);
+            
+            const avgPnl = (arr) => arr.length > 0 ? arr.reduce((s, e) => s + e.pnl, 0) / arr.length : 0;
+            const avgDD = (arr) => {
+                const withDD = arr.filter(e => e.drawdown != null);
+                return withDD.length > 0 ? withDD.reduce((s, e) => s + e.drawdown, 0) / withDD.length : null;
+            };
+            const avgTrades = (arr) => {
+                const withTrades = arr.filter(e => e.trades != null);
+                return withTrades.length > 0 ? withTrades.reduce((s, e) => s + e.trades, 0) / withTrades.length : null;
+            };
+            
+            // Perfect vs imperfect days
+            const perfectDays = entriesWithPct.filter(e => e.pct === 100);
+            const imperfectDays = entriesWithPct.filter(e => e.pct < 100);
+            
+            // Calculate max values for bar scaling
+            const allPnls = [avgPnl(lowDiscipline), avgPnl(midDiscipline), avgPnl(highDiscipline)];
+            const maxAbsPnl = Math.max(...allPnls.map(Math.abs), 1);
+            
+            // Insights
+            const insights = [];
+            
+            const highAvgPnl = avgPnl(highDiscipline);
+            const lowAvgPnl = avgPnl(lowDiscipline);
+            if (highDiscipline.length >= 2 && lowDiscipline.length >= 2) {
+                if (highAvgPnl > lowAvgPnl + 50) {
+                    insights.push({ type: 'positive', text: `High discipline days average $${highAvgPnl.toFixed(0)} more than low discipline days. Discipline is paying off!` });
+                } else if (lowAvgPnl > highAvgPnl + 50) {
+                    insights.push({ type: 'warning', text: `Interestingly, low discipline days are more profitable. This pattern rarely sustains—consider if you're taking uncalculated risks.` });
+                }
+            }
+            
+            const highAvgDD = avgDD(highDiscipline);
+            const lowAvgDD = avgDD(lowDiscipline);
+            if (highAvgDD !== null && lowAvgDD !== null && lowDiscipline.length >= 2) {
+                if (lowAvgDD > highAvgDD * 1.5) {
+                    insights.push({ type: 'negative', text: `Low discipline days have ${((lowAvgDD / highAvgDD - 1) * 100).toFixed(0)}% higher drawdowns. Breaking rules is costing you.` });
+                }
+            }
+            
+            const perfectAvgPnl = avgPnl(perfectDays);
+            const imperfectAvgPnl = avgPnl(imperfectDays);
+            if (perfectDays.length >= 2) {
+                if (perfectAvgPnl > imperfectAvgPnl) {
+                    insights.push({ type: 'positive', text: `Perfect discipline days average $${(perfectAvgPnl - imperfectAvgPnl).toFixed(0)} better. Keep following the rules!` });
+                }
+            }
+            
+            // Build HTML
+            let html = '';
+            
+            // P&L by Discipline
+            html += `
+                <div class="metric-section">
+                    <div class="metric-title">💰 P&L by Discipline Level</div>
+                    <div class="metric-bar-container">
+                        ${renderPnlBar('0-49%', avgPnl(lowDiscipline), lowDiscipline.length, maxAbsPnl)}
+                        ${renderPnlBar('50-79%', avgPnl(midDiscipline), midDiscipline.length, maxAbsPnl)}
+                        ${renderPnlBar('80-100%', avgPnl(highDiscipline), highDiscipline.length, maxAbsPnl)}
+                    </div>
+                </div>
+            `;
+            
+            // Drawdown by Discipline
+            const ddLow = avgDD(lowDiscipline);
+            const ddMid = avgDD(midDiscipline);
+            const ddHigh = avgDD(highDiscipline);
+            const maxDD = Math.max(ddLow || 0, ddMid || 0, ddHigh || 0, 1);
+            
+            html += `
+                <div class="metric-section">
+                    <div class="metric-title">📉 Avg Drawdown by Discipline Level</div>
+                    <div class="metric-bar-container">
+                        ${renderDDBar('0-49%', ddLow, lowDiscipline.filter(e => e.drawdown != null).length, maxDD)}
+                        ${renderDDBar('50-79%', ddMid, midDiscipline.filter(e => e.drawdown != null).length, maxDD)}
+                        ${renderDDBar('80-100%', ddHigh, highDiscipline.filter(e => e.drawdown != null).length, maxDD)}
+                    </div>
+                </div>
+            `;
+            
+            // Perfect vs Imperfect comparison
+            html += `
+                <div class="metric-section">
+                    <div class="metric-title">✨ Perfect Days vs Imperfect Days</div>
+                    <div class="metric-grid">
+                        <div class="metric-card">
+                            <div class="metric-card-label">Perfect Days</div>
+                            <div class="metric-card-value">${perfectDays.length}</div>
+                            <div class="metric-card-context">${((perfectDays.length / entries.length) * 100).toFixed(0)}% of days</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">Avg P&L (Perfect)</div>
+                            <div class="metric-card-value ${perfectAvgPnl >= 0 ? 'positive' : 'negative'}">${formatPnlShort(perfectAvgPnl)}</div>
+                            <div class="metric-card-context">${perfectDays.length} days</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">Avg P&L (Imperfect)</div>
+                            <div class="metric-card-value ${imperfectAvgPnl >= 0 ? 'positive' : 'negative'}">${formatPnlShort(imperfectAvgPnl)}</div>
+                            <div class="metric-card-context">${imperfectDays.length} days</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-card-label">Difference</div>
+                            <div class="metric-card-value ${perfectAvgPnl - imperfectAvgPnl >= 0 ? 'positive' : 'negative'}">${formatPnlShort(perfectAvgPnl - imperfectAvgPnl)}</div>
+                            <div class="metric-card-context">per day</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Trade count analysis
+            const entriesWithTradesData = entriesWithPct.filter(e => e.trades != null);
+            if (entriesWithTradesData.length >= 3) {
+                const sortedByTrades = [...entriesWithTradesData].sort((a, b) => a.trades - b.trades);
+                const lowTradesDays = sortedByTrades.slice(0, Math.ceil(sortedByTrades.length / 3));
+                const highTradesDays = sortedByTrades.slice(-Math.ceil(sortedByTrades.length / 3));
+                
+                const avgTradesLow = avgTrades(lowTradesDays);
+                const avgTradesHigh = avgTrades(highTradesDays);
+                
+                html += `
+                    <div class="metric-section">
+                        <div class="metric-title">🔢 Trade Count Impact</div>
+                        <div class="metric-grid">
+                            <div class="metric-card">
+                                <div class="metric-card-label">Fewer Trades Days</div>
+                                <div class="metric-card-value ${avgPnl(lowTradesDays) >= 0 ? 'positive' : 'negative'}">${formatPnlShort(avgPnl(lowTradesDays))}</div>
+                                <div class="metric-card-context">avg ${avgTradesLow?.toFixed(1) || '-'} trades</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-label">More Trades Days</div>
+                                <div class="metric-card-value ${avgPnl(highTradesDays) >= 0 ? 'positive' : 'negative'}">${formatPnlShort(avgPnl(highTradesDays))}</div>
+                                <div class="metric-card-context">avg ${avgTradesHigh?.toFixed(1) || '-'} trades</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-label">Avg DD (Fewer)</div>
+                                <div class="metric-card-value" style="color: #ef4444">${avgDD(lowTradesDays) != null ? '$' + avgDD(lowTradesDays).toFixed(0) : '-'}</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-card-label">Avg DD (More)</div>
+                                <div class="metric-card-value" style="color: #ef4444">${avgDD(highTradesDays) != null ? '$' + avgDD(highTradesDays).toFixed(0) : '-'}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Insights
+            if (insights.length > 0) {
+                html += `
+                    <div class="metric-section">
+                        <div class="metric-title">💡 Insights</div>
+                        ${insights.map(i => `<div class="metric-insight ${i.type}">${i.text}</div>`).join('')}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function renderPnlBar(label, value, count, maxVal) {
+            if (count === 0) {
+                return `
+                    <div class="metric-bar-row">
+                        <div class="metric-bar-label">${label}</div>
+                        <div class="metric-bar-wrapper">
+                            <div class="metric-bar-value" style="color: #666">No data</div>
+                        </div>
+                    </div>
+                `;
+            }
+            const width = Math.min(Math.abs(value) / maxVal * 80, 80);
+            const barClass = value >= 0 ? 'positive' : 'negative';
+            return `
+                <div class="metric-bar-row">
+                    <div class="metric-bar-label">${label}</div>
+                    <div class="metric-bar-wrapper">
+                        <div class="metric-bar ${barClass}" style="width: ${width + 20}%"></div>
+                        <div class="metric-bar-value">${formatPnlShort(value)} (${count}d)</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderDDBar(label, value, count, maxVal) {
+            if (value === null || count === 0) {
+                return `
+                    <div class="metric-bar-row">
+                        <div class="metric-bar-label">${label}</div>
+                        <div class="metric-bar-wrapper">
+                            <div class="metric-bar-value" style="color: #666">No data</div>
+                        </div>
+                    </div>
+                `;
+            }
+            const width = Math.min(value / maxVal * 80, 80);
+            return `
+                <div class="metric-bar-row">
+                    <div class="metric-bar-label">${label}</div>
+                    <div class="metric-bar-wrapper">
+                        <div class="metric-bar negative" style="width: ${width + 20}%"></div>
+                        <div class="metric-bar-value">$${value.toFixed(0)} (${count}d)</div>
+                    </div>
+                </div>
+            `;
         }
         
         // Settings
