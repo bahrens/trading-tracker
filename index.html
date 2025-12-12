@@ -1052,6 +1052,177 @@
             margin-top: 4px;
         }
         
+        /* No Team View */
+        .no-team-content {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .no-team-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .no-team-content h2 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        
+        .no-team-content > p {
+            color: #888;
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+        
+        .team-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+        
+        .team-action-card {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 25px;
+            flex: 1;
+            min-width: 200px;
+            max-width: 280px;
+        }
+        
+        .team-action-card h3 {
+            color: #fff;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        
+        .team-action-card p {
+            color: #666;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+        }
+        
+        .team-action-card input {
+            width: 100%;
+            padding: 12px;
+            background: #252542;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+        
+        .team-action-card input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+        
+        .team-divider {
+            display: flex;
+            align-items: center;
+            color: #555;
+            font-size: 0.9em;
+        }
+        
+        .btn-primary, .btn-secondary {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #333;
+            color: #fff;
+            border: 1px solid #444;
+        }
+        
+        .btn-secondary:hover {
+            background: #444;
+        }
+        
+        /* Team Header Card */
+        .team-header-card {
+            background: linear-gradient(135deg, #252542, #1a1a2e);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .team-header-info h2 {
+            color: #fff;
+            margin: 0 0 8px 0;
+            font-size: 1.3em;
+        }
+        
+        .team-code-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .team-code-display code {
+            background: #333;
+            padding: 4px 10px;
+            border-radius: 4px;
+            color: #667eea;
+            font-family: monospace;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+        
+        .copy-code-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 4px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .copy-code-btn:hover {
+            opacity: 1;
+        }
+        
+        .leave-team-btn {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+        
+        .leave-team-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
         /* Team Leaderboard */
         .team-leaderboard {
             display: grid;
@@ -1833,49 +2004,96 @@
         
         <!-- Team Tab -->
         <div class="tab-content" id="teamTab">
-            <!-- Discipline Leaderboard Callout -->
-            <div class="team-leaderboard" id="teamLeaderboard">
-                <div class="leaderboard-item">
-                    <span class="leaderboard-icon">🔥</span>
-                    <span class="leaderboard-label">Longest Streak:</span>
-                    <span class="leaderboard-value" id="leaderStreak">-</span>
-                </div>
-                <div class="leaderboard-item">
-                    <span class="leaderboard-icon">🏆</span>
-                    <span class="leaderboard-label">Most Perfect Days:</span>
-                    <span class="leaderboard-value" id="leaderPerfect">-</span>
-                </div>
-                <div class="leaderboard-item">
-                    <span class="leaderboard-icon">📈</span>
-                    <span class="leaderboard-label">Highest Discipline:</span>
-                    <span class="leaderboard-value" id="leaderDiscipline">-</span>
-                </div>
-            </div>
-            
-            <div class="team-summary" id="teamSummary">
-                <h3>👥 Team This Month</h3>
-                <div class="team-summary-stats">
-                    <div>
-                        <div class="team-summary-value" id="teamMembers">0</div>
-                        <div class="team-summary-label">Members</div>
-                    </div>
-                    <div>
-                        <div class="team-summary-value" id="teamAvgScore">0%</div>
-                        <div class="team-summary-label">Avg Discipline</div>
-                    </div>
-                    <div>
-                        <div class="team-summary-value" id="teamPerfectDays">0</div>
-                        <div class="team-summary-label">Combined Perfect Days</div>
-                    </div>
-                    <div>
-                        <div class="team-summary-value team-pnl" id="teamTotalPnl">$0</div>
-                        <div class="team-summary-label">Combined P&L</div>
+            <!-- No Team View -->
+            <div class="team-no-team" id="noTeamView">
+                <div class="card">
+                    <div class="no-team-content">
+                        <div class="no-team-icon">👥</div>
+                        <h2>Join or Create a Team</h2>
+                        <p>Team up with others to stay accountable. Share progress, compete on discipline, and build better habits together.</p>
+                        
+                        <div class="team-actions">
+                            <div class="team-action-card">
+                                <h3>🆕 Create a Team</h3>
+                                <p>Start a new accountability group</p>
+                                <input type="text" id="newTeamName" placeholder="Team name" maxlength="30">
+                                <button class="btn-primary" onclick="createTeam()">Create Team</button>
+                            </div>
+                            
+                            <div class="team-divider">
+                                <span>or</span>
+                            </div>
+                            
+                            <div class="team-action-card">
+                                <h3>🔗 Join a Team</h3>
+                                <p>Enter a code from your group</p>
+                                <input type="text" id="joinTeamCode" placeholder="Team code" maxlength="10" style="text-transform: uppercase;">
+                                <button class="btn-secondary" onclick="joinTeam()">Join Team</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="team-grid" id="teamGrid">
-                <div class="empty-state">Loading team data...</div>
+            <!-- Has Team View -->
+            <div class="team-has-team" id="hasTeamView" style="display: none;">
+                <!-- Team Header with Code -->
+                <div class="team-header-card">
+                    <div class="team-header-info">
+                        <h2 id="teamNameDisplay">Team Name</h2>
+                        <div class="team-code-display">
+                            <span>Team Code:</span>
+                            <code id="teamCodeDisplay">XXXX</code>
+                            <button class="copy-code-btn" onclick="copyTeamCode()" title="Copy code">📋</button>
+                        </div>
+                    </div>
+                    <button class="leave-team-btn" onclick="leaveTeam()">Leave Team</button>
+                </div>
+                
+                <!-- Discipline Leaderboard Callout -->
+                <div class="team-leaderboard" id="teamLeaderboard">
+                    <div class="leaderboard-item">
+                        <span class="leaderboard-icon">🔥</span>
+                        <span class="leaderboard-label">Longest Streak:</span>
+                        <span class="leaderboard-value" id="leaderStreak">-</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="leaderboard-icon">🏆</span>
+                        <span class="leaderboard-label">Most Perfect Days:</span>
+                        <span class="leaderboard-value" id="leaderPerfect">-</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span class="leaderboard-icon">📈</span>
+                        <span class="leaderboard-label">Highest Discipline:</span>
+                        <span class="leaderboard-value" id="leaderDiscipline">-</span>
+                    </div>
+                </div>
+                
+                <div class="team-summary" id="teamSummary">
+                    <h3>👥 Team This Month</h3>
+                    <div class="team-summary-stats">
+                        <div>
+                            <div class="team-summary-value" id="teamMembers">0</div>
+                            <div class="team-summary-label">Members</div>
+                        </div>
+                        <div>
+                            <div class="team-summary-value" id="teamAvgScore">0%</div>
+                            <div class="team-summary-label">Avg Discipline</div>
+                        </div>
+                        <div>
+                            <div class="team-summary-value" id="teamPerfectDays">0</div>
+                            <div class="team-summary-label">Combined Perfect Days</div>
+                        </div>
+                        <div>
+                            <div class="team-summary-value team-pnl" id="teamTotalPnl">$0</div>
+                            <div class="team-summary-label">Combined P&L</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="team-grid" id="teamGrid">
+                    <div class="empty-state">Loading team data...</div>
+                </div>
             </div>
         </div>
         
@@ -1928,6 +2146,7 @@
         // State
         let pb = null;
         let currentUser = null;
+        let currentTeam = null;
         let config = { ...DEFAULT_CONFIG };
         let configRecordId = null;
         let entries = [];
@@ -2676,24 +2895,48 @@
         
         // Team data
         async function loadTeamData() {
+            // First check if user has a team
+            await loadUserTeam();
+            
+            if (!currentTeam) {
+                // Show no-team view
+                document.getElementById('noTeamView').style.display = 'block';
+                document.getElementById('hasTeamView').style.display = 'none';
+                return;
+            }
+            
+            // Show has-team view
+            document.getElementById('noTeamView').style.display = 'none';
+            document.getElementById('hasTeamView').style.display = 'block';
+            
+            // Update team header
+            document.getElementById('teamNameDisplay').textContent = currentTeam.name;
+            document.getElementById('teamCodeDisplay').textContent = currentTeam.code;
+            
             const grid = document.getElementById('teamGrid');
             grid.innerHTML = '<div class="empty-state">Loading team data...</div>';
             
             try {
-                // Get all users
-                const users = await pb.collection('users').getFullList();
+                // Get users in this team
+                const users = await pb.collection('users').getFullList({
+                    filter: `team = '${currentTeam.id}'`
+                });
                 
-                // Get current month's entries for all users
+                // Get current month's entries for team users
                 const now = new Date();
                 const startOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
                 
+                const userIds = users.map(u => u.id);
                 const allEntries = await pb.collection('entries').getFullList({
                     filter: `date >= '${startOfMonth}'`
                 });
                 
+                // Filter to team members only
+                const teamEntries = allEntries.filter(e => userIds.includes(e.user));
+                
                 // Group by user and calculate stats
                 const userStats = users.map(user => {
-                    const userEntries = allEntries.filter(e => e.user === user.id);
+                    const userEntries = teamEntries.filter(e => e.user === user.id);
                     const totalPnl = userEntries.reduce((sum, e) => sum + (e.pnl || 0), 0);
                     
                     // Calculate average percentage (each entry's score/total as %)
@@ -2790,7 +3033,7 @@
                 
                 // Render cards
                 if (userStats.length === 0) {
-                    grid.innerHTML = '<div class="empty-state">No team activity this month yet.</div>';
+                    grid.innerHTML = '<div class="empty-state">No team activity this month yet. Start tracking!</div>';
                     return;
                 }
                 
@@ -2837,6 +3080,163 @@
             } catch (err) {
                 console.error('Failed to load team data:', err);
                 grid.innerHTML = '<div class="empty-state">Failed to load team data.</div>';
+            }
+        }
+        
+        // Load user's current team
+        async function loadUserTeam() {
+            try {
+                // Refresh current user data to get team field
+                const userData = await pb.collection('users').getOne(currentUser.id);
+                
+                if (userData.team) {
+                    currentTeam = await pb.collection('teams').getOne(userData.team);
+                } else {
+                    currentTeam = null;
+                }
+            } catch (err) {
+                console.error('Failed to load user team:', err);
+                currentTeam = null;
+            }
+        }
+        
+        // Generate a random team code
+        function generateTeamCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No I, O, 0, 1 to avoid confusion
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+        
+        // Create a new team
+        async function createTeam() {
+            const nameInput = document.getElementById('newTeamName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('Please enter a team name.');
+                return;
+            }
+            
+            try {
+                // Generate unique code
+                let code = generateTeamCode();
+                let attempts = 0;
+                
+                // Make sure code is unique
+                while (attempts < 10) {
+                    try {
+                        await pb.collection('teams').getFirstListItem(`code = '${code}'`);
+                        // Code exists, generate new one
+                        code = generateTeamCode();
+                        attempts++;
+                    } catch {
+                        // Code doesn't exist, we can use it
+                        break;
+                    }
+                }
+                
+                // Create team
+                const team = await pb.collection('teams').create({
+                    name: name,
+                    code: code,
+                    created_by: currentUser.id
+                });
+                
+                // Update user's team field
+                await pb.collection('users').update(currentUser.id, {
+                    team: team.id
+                });
+                
+                currentTeam = team;
+                nameInput.value = '';
+                
+                // Reload team view
+                loadTeamData();
+                
+            } catch (err) {
+                console.error('Failed to create team:', err);
+                alert('Failed to create team: ' + err.message);
+            }
+        }
+        
+        // Join an existing team
+        async function joinTeam() {
+            const codeInput = document.getElementById('joinTeamCode');
+            const code = codeInput.value.trim().toUpperCase();
+            
+            if (!code) {
+                alert('Please enter a team code.');
+                return;
+            }
+            
+            try {
+                // Find team by code
+                const team = await pb.collection('teams').getFirstListItem(`code = '${code}'`);
+                
+                // Update user's team field
+                await pb.collection('users').update(currentUser.id, {
+                    team: team.id
+                });
+                
+                currentTeam = team;
+                codeInput.value = '';
+                
+                // Reload team view
+                loadTeamData();
+                
+            } catch (err) {
+                console.error('Failed to join team:', err);
+                if (err.status === 404) {
+                    alert('Team not found. Check the code and try again.');
+                } else {
+                    alert('Failed to join team: ' + err.message);
+                }
+            }
+        }
+        
+        // Leave current team
+        async function leaveTeam() {
+            if (!currentTeam) return;
+            
+            if (!confirm(`Are you sure you want to leave "${currentTeam.name}"?`)) {
+                return;
+            }
+            
+            try {
+                // Clear user's team field
+                await pb.collection('users').update(currentUser.id, {
+                    team: ''
+                });
+                
+                currentTeam = null;
+                
+                // Reload team view
+                loadTeamData();
+                
+            } catch (err) {
+                console.error('Failed to leave team:', err);
+                alert('Failed to leave team: ' + err.message);
+            }
+        }
+        
+        // Copy team code to clipboard
+        async function copyTeamCode() {
+            if (!currentTeam) return;
+            
+            try {
+                await navigator.clipboard.writeText(currentTeam.code);
+                
+                const btn = document.querySelector('.copy-code-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✓';
+                setTimeout(() => btn.textContent = originalText, 1500);
+            } catch (err) {
+                // Fallback for older browsers
+                const code = currentTeam.code;
+                prompt('Copy this team code:', code);
             }
         }
         
