@@ -1485,6 +1485,27 @@
             white-space: nowrap;
         }
         
+        /* Unlock preview sections */
+        .unlock-preview {
+            opacity: 0.7;
+        }
+        
+        .unlock-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: #1a1a2e;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: #888;
+        }
+        
+        .unlock-icon {
+            font-size: 1.3em;
+        }
+        
         /* Badges */
         .badges-grid {
             display: grid;
@@ -2902,7 +2923,7 @@
                             }).join('')}
                         </div>
                         <div class="metric-insight">
-                            📅 ${14 - entriesWithPct.length > 0 ? `${14 - entriesWithPct.length} more days until weekly trends unlock` : 'Weekly trends coming soon'}
+                            📅 Track for 2 weeks to unlock weekly trends
                         </div>
                     </div>
                 `;
@@ -2966,6 +2987,22 @@
                             ${improvement > 0 ? `🎯 Discipline up ${Math.round(improvement)}% this month. You're improving!` : 
                               `⚠️ Discipline down ${Math.round(Math.abs(improvement))}% this month. What changed?`}
                         </div>` : ''}
+                    </div>
+                `;
+            } else if (entries.length >= 2) {
+                // Show unlock message for monthly comparison
+                const now = new Date();
+                const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                const daysUntilNextMonth = Math.ceil((nextMonth - now) / (1000 * 60 * 60 * 24));
+                
+                html += `
+                    <div class="metric-section unlock-preview">
+                        <div class="metric-title" style="color: #666;">📅 Monthly Comparison</div>
+                        <div class="unlock-message">
+                            <span class="unlock-icon">🔒</span>
+                            <span>Unlocks next month — ${daysUntilNextMonth} day${daysUntilNextMonth !== 1 ? 's' : ''} to go</span>
+                        </div>
+                        <p style="color: #555; font-size: 0.85em; text-align: center; margin: 0;">Keep tracking to compare your progress month over month</p>
                     </div>
                 `;
             }
